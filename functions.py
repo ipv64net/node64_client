@@ -1,6 +1,10 @@
 from pythonping import ping
-import requests, json, time, dns 
+import requests
+import json
+import time
+import dns
 import dns.resolver
+import logging
 
 version = "0.0.1"
 
@@ -9,8 +13,8 @@ def report_version(node_secret):
     myobj = {'node_secret' : node_secret,'version':version}
     try:
         x = requests.post(url, data = myobj)
-    except:
-        print("")    
+    except Exception as e:
+        pass
 
 def report_ipv4(node_secret):
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
@@ -18,15 +22,15 @@ def report_ipv4(node_secret):
     try:
         x = requests.post(url, data = myobj)
     except:
-        print("Skip: IPv4 could not be resolved")
-    
+        logging.warning("Skip: IPv4 could not be resolved")
+
 def report_ipv6(node_secret):
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
         x = requests.post(url, data = myobj)
     except:
-        print("Skip: IPv6 could not be resolved")
+        logging.warning("Skip: IPv6 could not be resolved")
 
 def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout):
     response_list = ping(icmp_dst, size=icmp_size, count=icmp_count, interval=icmp_interval, timeout=icmp_timeout)
@@ -41,7 +45,7 @@ def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout):
         task_result = {"error_msg":"timeout","packet_loss":packet_loss}
     data = json.dumps(task_result)
     return data
-        
+
 def dns_resolve(query,query_type):
     result = dns.resolver.Resolver()
     #result.nameservers = [nameserver]
@@ -53,7 +57,7 @@ def dns_resolve(query,query_type):
             records.append(IPval.to_text())
         data = {"rrset":records,"latency":response_time,"error":"no"}
     except:
-        print("Could not be resolved")
+        logging.warning("Could not be resolved")
         data = {"error":"Could not be resolved"}
     data = json.dumps(data)
     return data
