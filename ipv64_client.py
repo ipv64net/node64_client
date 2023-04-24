@@ -33,7 +33,7 @@ while(True):
                 icmp_interval = _tasks["task_infos"]["icmp_interval"]
                 icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
                 
-                task_result = functions.icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout)
+                task_result = functions.icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,4)
                 print(task_result)
                 print("End ICMPv4 Task ID: "+_tasks["task_id"])
                 
@@ -45,7 +45,7 @@ while(True):
                 icmp_interval = _tasks["task_infos"]["icmp_interval"]
                 icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
                 
-                task_result = functions.icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout)
+                task_result = functions.icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,6)
                 print(task_result)
                 print("End ICMPv6 Task ID: "+_tasks["task_id"])
                 
