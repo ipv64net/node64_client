@@ -18,6 +18,9 @@ while(True):
     x = requests.post(url, data = myobj)
 
     x = x.json()
+    if x["error"] == '1':
+        print("Node Secret is wrong")
+        break
     if x["report_ip"] == '1':
         functions.report_ipv4(node_secret)
         functions.report_ipv6(node_secret)
