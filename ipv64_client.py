@@ -1,6 +1,12 @@
-import requests, time, sys
-import functions
+# import libs
+import requests
+import time
+import sys
 import urllib3
+
+# import project modules
+import functions
+
 
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
