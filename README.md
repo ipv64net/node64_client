@@ -7,9 +7,10 @@
 Install the dependencies and start the server.
 
 ```sh
-apt install python3 python3-pip git -y
+apt -y install python3 python3-pip git
 git clone https://github.com/ipv64net/ipv64_client
-cd ipv64_client
-pip install dnspython icmplib multiping
+cd ipv64_client || exit 1
+
+pip3 install -r requirements.txt
 python3 ipv64_client.py <Dein Node Secret Key>
 ```
