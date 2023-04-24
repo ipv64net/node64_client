@@ -1,8 +1,6 @@
-from pythonping import ping
 import requests, json, time, sys
 import functions
 
-node_id = "8g8893ff"
 node_secret = sys.argv[1]
 
 print("IPv64.net - Initialisierung")
