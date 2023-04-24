@@ -8,7 +8,7 @@ def report_version(node_secret):
     url = 'https://ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret,'version':version}
     try:
-        x = requests.post(url, data = myobj)
+        x = requests.post(url, data = myobj, verify=False)
     except:
         print("")    
 
@@ -16,7 +16,7 @@ def report_ipv4(node_secret):
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
-        x = requests.post(url, data = myobj)
+        x = requests.post(url, data = myobj, verify=False)
     except:
         print("Skip: IPv4 could not be resolved")
     
@@ -24,7 +24,7 @@ def report_ipv6(node_secret):
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
-        x = requests.post(url, data = myobj)
+        x = requests.post(url, data = myobj, verify=False)
     except:
         print("Skip: IPv6 could not be resolved")
 
