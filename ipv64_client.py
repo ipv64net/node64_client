@@ -1,6 +1,14 @@
 import requests, time, sys
 import functions
 import urllib3
+import signal
+
+def signal_handler(sig, frame):
+    print('\nYou pressed Ctrl+C!\nExit Programm')
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+print("programm is starting, CTRL+C to stop")
 
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
