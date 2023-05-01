@@ -4,6 +4,7 @@ import time
 import sys
 import urllib3
 import signal
+import os
 
 def signal_handler(sig, frame):
     print('\nYou pressed Ctrl+C!\nExit Programm')
@@ -19,11 +20,13 @@ import functions
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-if len(sys.argv) == 1:
+if os.getenv('ipv64NodeSecret'):
+    node_secret = os.getenv('ipv64NodeSecret')
+elif len(sys.argv) == 1:
     print(f"{sys.argv[0]} <your node secret>")
     sys.exit(1)
-
-node_secret = sys.argv[1]
+else:
+    node_secret = sys.argv[1]
 
 print("IPv64.net - Initialisierung")
 # At Start, report IPv4 and IPv6
