@@ -3,6 +3,14 @@ import requests
 import time
 import sys
 import urllib3
+import signal
+
+def signal_handler(sig, frame):
+    print('\nYou pressed Ctrl+C!\nExit Programm')
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+print("programm is starting, CTRL+C to stop")
 
 # import project modules
 import functions
