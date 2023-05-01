@@ -1,6 +1,8 @@
 from icmplib import ping
-import requests, json, time, dns, multiping
-import dns.resolver
+import requests
+import json
+from dns.resolver import Resolver
+
 
 version = "0.0.1"
 
@@ -10,7 +12,7 @@ def report_version(node_secret):
     try:
         x = requests.post(url, data = myobj, verify=False)
     except:
-        print("")    
+        print("")
 
 def report_ipv4(node_secret):
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
@@ -19,7 +21,7 @@ def report_ipv4(node_secret):
         x = requests.post(url, data = myobj, verify=False)
     except:
         print("Skip: IPv4 could not be resolved")
-    
+
 def report_ipv6(node_secret):
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
@@ -42,9 +44,9 @@ def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,family):
         task_result = {"error_msg":"timeout","packet_loss":packet_loss}
     data = json.dumps(task_result)
     return data
-        
+
 def dns_resolve(query,query_type):
-    result = dns.resolver.Resolver()
+    result = Resolver()
     #result.nameservers = [nameserver]
     try:
         result = result.resolve(query,query_type)
