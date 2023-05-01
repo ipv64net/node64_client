@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     container_name: ipv64client
     build:
-      context: ./
-      dockerfile: Dockerfile
+      context: ./../../
+      dockerfile: ./devices/Docker/Dockerfile
     environment:
       - ipv64NodeSecret=<Node #Secret>
