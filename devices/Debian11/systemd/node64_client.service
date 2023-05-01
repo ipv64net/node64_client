@@ -10,4 +10,4 @@ WorkingDirectory=/opt/ipv64_client/
 ExecStart=python ipv64_client.py Node #Secre
 
 [Install]
-Wants=network-online.target
+WantedBy=network-online.target
