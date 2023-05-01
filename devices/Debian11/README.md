@@ -27,7 +27,7 @@ pip3 install -r requirements.txt
 ```
 5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client) to the folder /etc/init.d/
 ```sh
-wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
+wget -O /etc/systemd/system/node64_client.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
 ```
 6. Edit the Node #Secret in the Servicefile
 7. Enable the Service
