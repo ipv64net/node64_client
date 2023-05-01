@@ -8,7 +8,7 @@
  
 ## Installation
 
-Instructions for Compose V2 ([(From the end of June 2023 Compose V1 won’t be supported anymore)]https://docs.docker.com/compose/)
+Instructions for Compose V2 (From the end of June 2023 Compose V1 won’t be supported anymore) https://docs.docker.com/compose/
 
 
 1. Clone repo
