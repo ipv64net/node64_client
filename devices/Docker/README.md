@@ -1,4 +1,4 @@
-# IPv64 Client on Mango (GL-MT300N-V2)
+# IPv64 Client on Docker
 
 ![alt text](https://ipv64.net/img/ipv64_logo.svg "Logo")
 
