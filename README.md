@@ -33,4 +33,4 @@ docker-compose up -d
 
 [Debian 11](devices/Debian11/README.md)
 
-[Mango (GL-MT300N-V2)](devices/gli-net/GL-MT300N-V2/README.md)
+[Mango (GL-MT300N-V2)](devices/gl-inet/GL-MT300N-V2/README.md)
