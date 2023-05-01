@@ -16,21 +16,10 @@ pip3 install -r requirements.txt
 python3 ipv64_client.py <Dein Node Secret Key>
 ```
 
-
-## Docker
-```sh
-git clone https://github.com/ipv64net/ipv64_client
-cd ipv64_client
-docker-compose build
-```
-Edit docker-compose.yml
-```sh
-docker-compose up -d
-```
-
-
 ## Installation on hardware devices
 
 [Debian 11](devices/Debian11/README.md)
+
+[Docker](devices/Docker/README.md)
 
 [Mango (GL-MT300N-V2)](devices/gl-inet/GL-MT300N-V2/README.md)
