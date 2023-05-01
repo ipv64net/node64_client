@@ -19,6 +19,10 @@ import functions
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+if len(sys.argv) == 1:
+    print(f"{sys.argv[0]} <your node secret>")
+    sys.exit(1)
+
 node_secret = sys.argv[1]
 
 print("IPv64.net - Initialisierung")

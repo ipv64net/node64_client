@@ -13,3 +13,15 @@ cd ipv64_client
 pip install dnspython icmplib multiping requests
 python3 ipv64_client.py <Dein Node Secret Key>
 ```
+
+
+## Docker
+```sh
+git clone https://github.com/ipv64net/ipv64_client
+cd ipv64_client
+docker-compose build
+```
+Edit docker-compose.yml
+```sh
+docker-compose up -d
+```
