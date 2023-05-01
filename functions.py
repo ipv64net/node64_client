@@ -4,11 +4,11 @@ import dns.resolver
 
 version = "0.0.1"
 
-def report_version(node_secret):
+def report_version(node_secret, timeout = 1.5):
     url = 'https://ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret,'version':version}
     try:
-        x = requests.post(url, data = myobj, verify=False)
+        x = requests.post(url, data = myobj, verify=False, timeout=timeout)
     except:
         print("")    
 
@@ -16,7 +16,7 @@ def report_ipv4(node_secret):
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
-        x = requests.post(url, data = myobj, verify=False)
+        x = requests.post(url, data = myobj, verify=False, timeout=timeout)
     except:
         print("Skip: IPv4 could not be resolved")
     
@@ -24,7 +24,7 @@ def report_ipv6(node_secret):
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
-        x = requests.post(url, data = myobj, verify=False)
+        x = requests.post(url, data = myobj, verify=False, timeout=timeout)
     except:
         print("Skip: IPv6 could not be resolved")
 
