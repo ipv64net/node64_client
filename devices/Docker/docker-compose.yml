@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  ipv64client:
+  node64client:
     restart: unless-stopped
-    container_name: ipv64client
+    container_name: node64client
     build:
       context: ./../../
       dockerfile: ./devices/Docker/Dockerfile
