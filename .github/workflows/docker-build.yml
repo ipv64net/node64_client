@@ -1,4 +1,4 @@
-name: Build docker file for PythonDiscordBot
+name: Docker Container build
 
 on:
   schedule:

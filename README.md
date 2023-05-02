@@ -3,6 +3,7 @@
 ![alt text](https://ipv64.net/img/ipv64_logo.svg "Logo")
 
 [![Syntax Check](https://github.com/ipv64net/ipv64_client/actions/workflows/main.yml/badge.svg)](https://github.com/ipv64net/ipv64_client/actions/workflows/main.yml)
+[![Docker Container](https://github.com/ipv64net/ipv64_client/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ipv64net/ipv64_client/actions/workflows/docker-build.yml)
 
 ## Installation
 
