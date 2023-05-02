@@ -14,7 +14,7 @@ def report_version(node_secret, timeout = 1.5):
     except:
         print("")
 
-def report_ipv4(node_secret):
+def report_ipv4(node_secret, timeout = 1.5):
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
@@ -22,7 +22,7 @@ def report_ipv4(node_secret):
     except:
         print("Skip: IPv4 could not be resolved")
 
-def report_ipv6(node_secret):
+def report_ipv6(node_secret, timeout = 1.5):
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
