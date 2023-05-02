@@ -10,7 +10,7 @@ on:
 
 
 jobs:
-  Build Dockercontainer:
+  Build_Dockercontainer:
     runs-on: ubuntu-latest
     if: github.repository == 'JonathanN1203/ipv64_client'
     steps:
