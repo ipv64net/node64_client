@@ -1,4 +1,4 @@
-name: Docker Container
+name: Docker Container build
 
 on:
   schedule:
