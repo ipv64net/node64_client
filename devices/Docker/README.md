@@ -4,7 +4,7 @@
 
 ## Hardware Requirements
 
- - [Docker]([https://github.com/ipv64net/ipv64_client/blob/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client](https://github.com/docker/docker-install)
+ - [Docker](https://github.com/docker/docker-install)
  
 ## Installation
 
