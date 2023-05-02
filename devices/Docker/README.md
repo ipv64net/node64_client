@@ -25,3 +25,13 @@ docker compose build
 ```sh
 docker compose up -d
 ```
+## Installation with Prebuild Container
+
+1. Before starting the container you have to replace <Node #Secret> with your Node Secret
+```sh
+docker run -d \
+  --name node64_client \
+  -e ipv64NodeSecret=<Node #Secret> \
+  --restart=unless-stopped \
+  jonathann1203/node64_client:v1
+```
