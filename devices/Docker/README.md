@@ -32,6 +32,6 @@ docker compose up -d
 docker run -d \
   --name node64_client \
   -e ipv64NodeSecret=<Node #Secret> \
-  --restart=always \
+  --restart=unless-stopped \
   jonathann1203/node64_client:v1
 ```
