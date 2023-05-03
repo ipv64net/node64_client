@@ -31,4 +31,4 @@ jobs:
         with:
           file: devices/Docker/Dockerfile
           push: true
-          tags: jonathann1203/node64_client:v1
+          tags: jonathann1203/node64_client:v1, jonathann1203/node64_client:latest
