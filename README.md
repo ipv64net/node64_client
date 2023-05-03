@@ -1,7 +1,7 @@
 # IPv64 Client
 
-![alt text](./files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
-![alt text](./files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
+![alt text](/files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
+![alt text](/files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
 
 [![Syntax Check](https://github.com/ipv64net/ipv64_client/actions/workflows/main.yml/badge.svg)](https://github.com/ipv64net/ipv64_client/actions/workflows/main.yml)
 [![Docker Container](https://github.com/ipv64net/ipv64_client/actions/workflows/docker-build.yml/badge.svg)](https://github.com/ipv64net/ipv64_client/actions/workflows/docker-build.yml)
