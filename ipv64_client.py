@@ -6,15 +6,12 @@ import urllib3
 import signal
 import os
 
-def signal_handler(sig, frame):
-    print('\nYou pressed Ctrl+C!\nExit Programm')
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-print("programm is starting, CTRL+C to stop")
-
 # import project modules
 import functions
+
+# setting signal handler
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 
 #Hide verification message
