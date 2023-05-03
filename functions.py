@@ -2,7 +2,7 @@ from icmplib import ping
 import requests
 import json
 from dns.resolver import Resolver
-
+import signal
 
 version = "0.0.2"
 
