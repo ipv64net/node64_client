@@ -5,7 +5,7 @@ from dns.resolver import Resolver
 import signal
 import sys
 
-version = "0.0.2"
+version = "0.0.3"
 
 def report_version(node_secret, timeout = 1.5):
     url = 'https://ipv64.net/dims/report_node_status.php'
