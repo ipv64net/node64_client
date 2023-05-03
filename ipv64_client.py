@@ -41,9 +41,8 @@ while True:
     x = requests.post(url, data=myobj, verify=False)
 
     x = x.json()
-    if x["verbose"] == 1:
-        print(x)
-    if x["error"] > 0:
+
+    if x["error"] > '0':
         print("Error Code:"+ x["error"])
         break
     if x["report_ip"] == '1':
