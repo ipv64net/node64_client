@@ -40,6 +40,8 @@ while True:
     
     x = requests.post(url, data=myobj, verify=False)
     x = x.json()
+    if x["exit"] == '1':
+        sys.exit("Script stopped by IPv64 Master")
     if x["verbose"] == '1':
         print(x)
     if x["error"] > 0:
