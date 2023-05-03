@@ -42,7 +42,7 @@ while True:
 
     x = x.json()
 
-    if x["error"] > '0':
+    if x["error"] == '1':
         print("Error Code:"+ x["error"])
         break
     if x["report_ip"] == '1':
