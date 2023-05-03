@@ -10,8 +10,8 @@ import os
 import functions
 
 # setting signal handler
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, functions.signal_handler)
+signal.signal(signal.SIGTERM, functions.signal_handler)
 
 
 #Hide verification message
