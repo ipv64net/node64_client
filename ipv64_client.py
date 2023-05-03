@@ -37,7 +37,10 @@ functions.report_version(node_secret)
 while True:
     url = 'https://ipv64.net/dims/get_task.php'
     myobj = {'node_secret': node_secret}
-
+    
+    if x["verbose"] == '1':
+        print(x)
+        break
     x = requests.post(url, data=myobj, verify=False)
 
     x = x.json()
