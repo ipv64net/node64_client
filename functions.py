@@ -2,7 +2,8 @@ from icmplib import ping
 import requests
 import json
 from dns.resolver import Resolver
-
+import signal
+import sys
 
 version = "0.0.2"
 
@@ -60,3 +61,11 @@ def dns_resolve(query,query_type):
         data = {"error":"Could not be resolved"}
     data = json.dumps(data)
     return data
+
+def signal_handler(sig, frame):
+    if sig == signal.SIGINT:
+        print('\nYou pressed Ctrl+C!\nExit Programm')
+    if sig == signal.SIGTERM:
+        print('\nExit Programm')
+    sys.exit(0)
+
