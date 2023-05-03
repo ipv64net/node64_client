@@ -39,10 +39,10 @@ while True:
     myobj = {'node_secret': node_secret}
     
     x = requests.post(url, data=myobj, verify=False)
-
     x = x.json()
-
-    if x["error"] == '1':
+    if x["verbose"] == '1':
+        print(x)
+    if x["error"] > '0':
         print("Error Code:"+ x["error"])
         break
     if x["report_ip"] == '1':
