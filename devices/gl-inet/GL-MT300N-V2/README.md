@@ -1,6 +1,7 @@
 # IPv64 Client on Mango (GL-MT300N-V2)
 
-![alt text](https://ipv64.net/img/ipv64_logo.svg "Logo")
+![alt text](/files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
+![alt text](/files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
 
 ## Hardware Requirements
 
