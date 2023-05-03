@@ -38,12 +38,11 @@ while True:
     url = 'https://ipv64.net/dims/get_task.php'
     myobj = {'node_secret': node_secret}
     
-    if x["verbose"] == '1':
-        print(x)
-        break
     x = requests.post(url, data=myobj, verify=False)
 
     x = x.json()
+    if x["verbose"] == '1':
+        print(x)
     if x["error"] > '0':
         print("Error Code:"+ x["error"])
         break
