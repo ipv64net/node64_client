@@ -4,7 +4,7 @@ import json
 from dns.resolver import Resolver
 
 
-version = "0.0.1"
+version = "0.0.2"
 
 def report_version(node_secret, timeout = 1.5):
     url = 'https://ipv64.net/dims/report_node_status.php'
