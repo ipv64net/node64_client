@@ -39,12 +39,12 @@ while True:
     x = x.json()
     if x["exit"] == 1:
         sys.exit("Script stopped by IPv64 Master")
-    if x["verbose"] == '1':
+    if x["verbose"] == 1:
         print(x)
     if x["error"] > 0:
         print("Error Code:"+ x["error"])
         break
-    if x["report_ip"] == '1':
+    if x["report_ip"] == 1:
         functions.report_ipv4(node_secret)
         functions.report_ipv6(node_secret)
         print("Report IPv4 & IPv6")
