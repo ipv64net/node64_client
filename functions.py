@@ -3,6 +3,7 @@ import requests
 import json
 from dns.resolver import Resolver
 import signal
+import sys
 
 version = "0.0.2"
 
