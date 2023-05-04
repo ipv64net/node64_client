@@ -1,4 +1,4 @@
-from icmplib import ping
+from icmplib import ping, traceroute
 import requests
 import json
 from dns.resolver import Resolver
@@ -44,6 +44,26 @@ def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,family):
         packet_loss = response_list.packet_loss
         task_result = {"error_msg":"timeout","packet_loss":packet_loss}
     data = json.dumps(task_result)
+    return data
+
+def trace(trace_dst,trace_size,trace_count,trace_interval,trace_timeout,max_hops,family):
+    try:
+        hops = traceroute(trace_dst,count=trace_count,interval=0.1,timeout=1,max_hops=30,family=family,payload_size=trace_size)
+        last_distance = 0
+        tracert = []
+        dist = 0
+
+        for hop in hops:
+            dist += 1
+            if last_distance + 1 != hop.distance:
+                task_result = {"distance":dist}
+            else:
+                task_result = {"distance":hop.distance,"address":hop.address,"rtt_avg":hop.avg_rtt,"packet_loss":hop.packet_loss,"jitter":hop.jitter,"is_alive":hop.is_alive,"error_msg":"0",}
+            tracert.append(task_result)
+            last_distance = hop.distance
+    except:
+        task_result = {"error_msg":"timeout","packet_loss":"1"}
+    data = json.dumps(tracert)
     return data
 
 def dns_resolve(query,query_type):
