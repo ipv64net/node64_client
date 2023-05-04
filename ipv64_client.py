@@ -74,6 +74,20 @@ while True:
                 task_result = functions.icmp(icmp_dst, icmp_size, icmp_count, icmp_interval, icmp_timeout, 6)
                 print(task_result)
                 print("End ICMPv6 Task ID: " + _tasks["task_id"])
+                               
+            if _tasks["task_type"] == "traceroute":
+                print("Start Traceroute Task ID: " + _tasks["task_id"])
+                trace_dst = _tasks["task_infos"]["trace_dst"]
+                trace_size = _tasks["task_infos"]["trace_size"]
+                trace_count = _tasks["task_infos"]["trace_count"]
+                trace_interval = _tasks["task_infos"]["trace_interval"]
+                trace_timeout = _tasks["task_infos"]["trace_timeout"]
+                trace_max_hops = _tasks["task_infos"]["trace_max_hops"]
+                trace_family = _tasks["task_infos"]["trace_family"]
+
+                task_result = functions.trace(trace_dst,trace_count,trace_interval,trace_timeout,trace_max_hops,trace_family,trace_size)
+                print(task_result)
+                print("End Traceroute Task ID: " + _tasks["task_id"])
 
             if _tasks["task_type"] == "dns":
                 print("Start DNS Task ID: " + _tasks["task_id"])
