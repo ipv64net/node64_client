@@ -1,0 +1,10 @@
+#!/bin/sh /etc/rc.common
+USE_PROCD=1
+START=95
+STOP=01
+start_service() {
+    procd_open_instance
+    procd_set_param respawn ${threshold:-20} ${timeout:-5} ${retry:-3}
+    procd_set_param command /usr/bin/python3 "/opt/ipv64_client/ipv64_client.py" "Node #Secret"
+    procd_close_instance
+}
