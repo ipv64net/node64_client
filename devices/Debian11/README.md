@@ -10,6 +10,13 @@
  
 ## Installation
 
+1. Execute install script
+
+```sh
+sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)
+```
+
+## OR Step by Step
 
 1. Install the required packages
 ```sh
