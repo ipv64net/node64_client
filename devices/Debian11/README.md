@@ -8,7 +8,21 @@
 - Debian 11
 - 2 GB or more Storage free
 
+<<<<<<< HEAD
+
 ## Installation
+
+=======
+
+1. Execute install script
+
+```sh
+sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)
+```
+
+## OR Step by Step
+
+> > > > > > > 8d424813add185950ef113095d1502b4575160fc
 
 1. Install the required packages
 
@@ -29,7 +43,7 @@ cd ipv64_client/
 pip3 install -r requirements.txt
 ```
 
-5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client) to the folder /etc/init.d/
+5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/Debian11/systemd/node64_client.service) to the folder /etc/systemd/system/
 
 ```sh
 wget -O /etc/systemd/system/node64_client.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
