@@ -6,7 +6,7 @@ service_file="/etc/systemd/system/node64_client.service"
 initD_file="/etc/init.d/node64_client"
 ####################################################################################################################
 if [[ $EUID -ne 0 ]]; then
-    #echo "This script must be run as root"
+    echo "This script must be run as root"
     exit 1
 fi
 #this is the auto-install routine
