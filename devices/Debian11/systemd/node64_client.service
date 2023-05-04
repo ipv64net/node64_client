@@ -1,0 +1,13 @@
+[Unit]
+Description=Node64 Client Script
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/opt/ipv64_client/
+ExecStart=python ipv64_client.py Node #Secre
+
+[Install]
+WantedBy=network-online.target

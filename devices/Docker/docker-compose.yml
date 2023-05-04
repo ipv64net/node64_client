@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  node64client:
+    restart: unless-stopped
+    container_name: node64client
+    build:
+      context: ./../../
+      dockerfile: ./devices/Docker/Dockerfile
+    environment:
+      - ipv64NodeSecret=<Node #Secret>
