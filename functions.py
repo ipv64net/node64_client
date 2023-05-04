@@ -52,6 +52,7 @@ def trace(trace_dst,trace_size,trace_count,trace_interval,trace_timeout,max_hops
         last_distance = 0
         tracert = []
         dist = 0
+        end_hops = 0
 
         for hop in hops:
             dist += 1
@@ -61,6 +62,8 @@ def trace(trace_dst,trace_size,trace_count,trace_interval,trace_timeout,max_hops
                 task_result = {"distance":hop.distance,"address":hop.address,"rtt_avg":hop.avg_rtt,"packet_loss":hop.packet_loss,"jitter":hop.jitter,"is_alive":hop.is_alive,"error_msg":"0",}
             tracert.append(task_result)
             last_distance = hop.distance
+        end_hops = {"hops":last_distance}
+        tracert.append(end_hops)
     except:
         task_result = {"error_msg":"timeout","packet_loss":"1"}
     data = json.dumps(tracert)
