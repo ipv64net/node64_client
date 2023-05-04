@@ -19,6 +19,7 @@ function get_ipv64_client() {
     git clone https://github.com/ipv64net/ipv64_client.git
     cd ipv64_client/
     pip3 install -r requirements.txt
+    wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/init.d/node64_client
 }
 
 function make_service_file() {
@@ -40,9 +41,7 @@ function make_service_file() {
     echo "WantedBy=network-online.target" >>"${service_file}"
 }
 
-wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/init.d/node64_client
-
-#get_ipv64_client
+get_ipv64_client
 make_service_file
 echo "Enable the service with:"
 echo "systemctl enable --now node64_client"
