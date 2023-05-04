@@ -4,7 +4,7 @@ import json
 from dns.resolver import Resolver
 import signal
 import sys
-
+#remohatnenkurzenaberdafuerduenn
 version = "0.0.4"
 
 def report_version(node_secret, timeout = 1.5):
