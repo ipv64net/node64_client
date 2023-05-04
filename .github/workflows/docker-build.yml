@@ -12,7 +12,7 @@ on:
 jobs:
   Build_Dockercontainer:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }} && ${{ github.repository == 'JonathanN1203/ipv64_client' }}
+    if: ${{ github.ref == 'refs/heads/main' && github.repository == 'JonathanN1203/ipv64_client' }}
     steps:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
@@ -35,7 +35,7 @@ jobs:
           
   Build_Dev_Dockercontainer:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/dev' }} && ${{ github.repository == 'JonathanN1203/ipv64_client' }}
+    if: ${{ github.ref == 'refs/heads/dev' && github.repository == 'JonathanN1203/ipv64_client' }}
     steps:
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
