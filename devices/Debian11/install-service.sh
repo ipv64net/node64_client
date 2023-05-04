@@ -40,8 +40,7 @@ function make_service_file() {
     echo "WantedBy=network-online.target" >>"${service_file}"
 }
 
-#wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/init.d/node64_client
-#wget -O /etc/systemd/system/node64_client.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
+wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/init.d/node64_client
 
 #get_ipv64_client
 make_service_file
