@@ -17,7 +17,7 @@
 - install the service
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -i
 ```
 
@@ -30,7 +30,7 @@ systemctl enable --now node64_client
 - update the service
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -u
 ```
 
@@ -41,7 +41,7 @@ systemctl restart node64_client.service
 - print the help message
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -h
 ```
 
