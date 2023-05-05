@@ -64,7 +64,7 @@ function make_initD_file() {
 }
 
 display_help() {
-    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] -- Here should be a description about the node64_client in the near future." >&2
+    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] -- Node64 worker client that is receiving tasks for dns, icmp and tracroute task." >&2
     echo
     echo "  -h | --help    -> show this help text"
     echo "  -i | --install -> install the node64_client on your system"
