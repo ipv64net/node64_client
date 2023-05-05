@@ -183,3 +183,9 @@ fabric.properties
 
 # idea folder, uncomment if you don't need it
 .idea/
+
+#vscode
+.vscode/
+
+# Local History for Visual Studio Code
+.history/

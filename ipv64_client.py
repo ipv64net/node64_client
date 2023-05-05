@@ -58,9 +58,7 @@ while True:
                 icmp_count = _tasks["task_infos"]["icmp_count"]
                 icmp_interval = _tasks["task_infos"]["icmp_interval"]
                 icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
-
                 task_result = functions.icmp(icmp_dst, icmp_size, icmp_count, icmp_interval, icmp_timeout, 4)
-                print(task_result)
                 print("End ICMPv4 Task ID: " + _tasks["task_id"])
 
             if _tasks["task_type"] == "icmpv6":
@@ -70,9 +68,7 @@ while True:
                 icmp_count = _tasks["task_infos"]["icmp_count"]
                 icmp_interval = _tasks["task_infos"]["icmp_interval"]
                 icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
-
                 task_result = functions.icmp(icmp_dst, icmp_size, icmp_count, icmp_interval, icmp_timeout, 6)
-                print(task_result)
                 print("End ICMPv6 Task ID: " + _tasks["task_id"])
                                
             if _tasks["task_type"] == "traceroute":
@@ -84,24 +80,28 @@ while True:
                 trace_timeout = _tasks["task_infos"]["trace_timeout"]
                 trace_max_hops = _tasks["task_infos"]["trace_max_hops"]
                 trace_family = _tasks["task_infos"]["trace_family"]
-
                 task_result = functions.trace(trace_dst,trace_count,trace_interval,trace_timeout,trace_max_hops,trace_family,trace_size)
-                print(task_result)
                 print("End Traceroute Task ID: " + _tasks["task_id"])
 
             if _tasks["task_type"] == "dns":
                 print("Start DNS Task ID: " + _tasks["task_id"])
                 dns_query = _tasks["task_infos"]["dns_query"]
                 dns_type = _tasks["task_infos"]["dns_type"]
-
                 task_result = functions.dns_resolve(dns_query, dns_type)
-                print(task_result)
                 print("End DNS Task ID: " + _tasks["task_id"])
+                
+            if _tasks["task_type"] == "nslookup":
+                print("Start NSLOOKUP Task ID: " + _tasks["task_id"])
+                ns_ip = _tasks["task_infos"]["ns_ip"]
+                task_result = functions.nslookup(ns_ip)
+                print("End NSLOOKUP Task ID: " + _tasks["task_id"])
 
             if task_result is not None:
                 url = 'https://ipv64.net/dims/task_report_result.php'
                 myobj = {'node_secret': node_secret, 'task_id': _tasks["task_id"], 'task_result': task_result}
                 req = requests.post(url, data=myobj, verify=False)
+    if x["verbose"] == 1:
+        print(task_result)
     print("Wait for next Job.")
     time.sleep(x["wait"])
 
