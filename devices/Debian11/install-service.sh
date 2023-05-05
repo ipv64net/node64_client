@@ -70,18 +70,13 @@ display_help() {
     echo "  -i | --install -> install the node64_client on your system"
     echo "  -u | --update  -> update the node64_client to the latest Version"
     echo
-    # echo some stuff here for the -a or --add-options
     exit 1
 }
 
-################################
-# Check if parameters options  #
-# are given on the commandline #
-################################
 while :; do
     case "$1" in
     -h | --help)
-        display_help # Call your function
+        display_help
         exit 0
         ;;
     -i | --install)
@@ -102,28 +97,34 @@ while :; do
         break
         ;;
     -u | --update)
-        echo "------------------------"
-        echo "Update the node64_Client"
-        echo "------------------------"
-        update_ipv64_client
-        echo "The update of the node64_client is finished"
-        echo "------------------------"
-        echo "now restart the node64_client Service with:"
-        echo "systemctl restart node64_client.service"
-        break
+        if [ -d "/opt/ipv64_client/.git" ]; then
+            echo "------------------------"
+            echo "Update the node64_Client"
+            echo "------------------------"
+            update_ipv64_client
+            echo "The update of the node64_client is finished"
+            echo "------------------------"
+            echo "now restart the node64_client Service with:"
+            echo "systemctl restart node64_client.service"
+            break
+        else
+            echo "The directory has not been cloned from Github or node64_client has not been installed yet."
+            echo "Please install node64_client via github."
+            display_help
+            exit 1
+        fi
         ;;
 
-    --) # End of all options
+    --)
         shift
         break
         ;;
     -*)
         echo "Error: Unknown option: $1" >&2
-        ## or call function display_help
         display_help
         exit 1
         ;;
-    *) # No more options
+    *)
         display_help
         exit 1
         ;;
