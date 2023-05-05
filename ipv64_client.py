@@ -97,6 +97,14 @@ while True:
                 task_result = functions.dns_resolve(dns_query, dns_type)
                 print(task_result)
                 print("End DNS Task ID: " + _tasks["task_id"])
+                
+            if _tasks["task_type"] == "nslookup":
+                print("Start NSLOOKUP Task ID: " + _tasks["task_id"])
+                ns_ip = _tasks["task_infos"]["ns_ip"]
+
+                task_result = functions.nslookup(ns_ip)
+                print(task_result)
+                print("End NSLOOKUP Task ID: " + _tasks["task_id"])
 
             if task_result is not None:
                 url = 'https://ipv64.net/dims/task_report_result.php'

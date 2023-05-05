@@ -1,6 +1,7 @@
 from icmplib import ping, traceroute
 import requests
 import json
+import dns
 from dns.resolver import Resolver
 import signal
 import sys
@@ -79,6 +80,18 @@ def dns_resolve(query,query_type):
         for IPval in result:
             records.append(IPval.to_text())
         data = {"rrset":records,"latency":response_time,"error":"no"}
+    except:
+        print("Could not be resolved")
+        data = {"error":"Could not be resolved"}
+    data = json.dumps(data)
+    return data
+    
+def nslookup(query):
+    try:
+        data = []
+        result = dns.resolver.resolve_address(query)
+        for res in result:
+            data = {"ptr":str(res),"error":"0"}
     except:
         print("Could not be resolved")
         data = {"error":"Could not be resolved"}
