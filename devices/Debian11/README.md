@@ -17,7 +17,7 @@
 - install the service
 
 ```sh
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -i
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)" -i
 ```
 
 ```sh
@@ -29,7 +29,7 @@ systemctl enable --now node64_client
 - update the service
 
 ```sh
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -u
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)" -u
 ```
 
 ```sh
@@ -39,7 +39,7 @@ systemctl restart node64_client.service
 - print the help message
 
 ```sh
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -h
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)" -h
 ```
 
 ## OR Step by Step
