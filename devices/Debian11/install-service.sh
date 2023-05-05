@@ -1,5 +1,5 @@
 #!/bin/bash
-#clear
+clear
 ######here all the variables#######################################################################################
 apps="git build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev python3 python3-pip" #add here your application
 service_file="/etc/systemd/system/node64_client.service"
@@ -64,7 +64,7 @@ function make_initD_file() {
 }
 
 display_help() {
-    echo "Usage: $(basename "$0") [-h | --help] [-i | --install] [-u | --update] -- Here should be a description about the node64_client in the near future." >&2
+    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] -- Here should be a description about the node64_client in the near future." >&2
     echo
     echo "  -h | --help    -> show this help text"
     echo "  -i | --install -> install the node64_client on your system"
