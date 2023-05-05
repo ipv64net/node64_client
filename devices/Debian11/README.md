@@ -8,21 +8,41 @@
 - Debian 11
 - 2 GB or more Storage free
 
-<<<<<<< HEAD
-
 ## Installation
 
 =======
 
 1. Execute install script
 
+- install the service
+
 ```sh
-sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -i
+```
+
+```sh
+systemctl daemon-reload
+systemctl enable node64_client.service
+systemctl enable --now node64_client
+```
+
+- update the service
+
+```sh
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -u
+```
+
+```sh
+systemctl restart node64_client.service
+```
+
+- print the help message
+
+```sh
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Mr-Phil1/ipv64_client/dev/devices/Debian11/install-service.sh)" -h
 ```
 
 ## OR Step by Step
-
-> > > > > > > 8d424813add185950ef113095d1502b4575160fc
 
 1. Install the required packages
 
@@ -51,16 +71,6 @@ wget -O /etc/systemd/system/node64_client.service https://raw.githubusercontent.
 
 6. Edit the Node #Secret in the Servicefile
 7. Enable the Service
-
-```sh
-systemctl enable --now node64_client
-```
-
-## Use the auto-install Script.
-
-```sh
-sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/ipv64net/ipv64_client/dev/devices/Debian11/install-service.sh)
-```
 
 ```sh
 systemctl enable --now node64_client
