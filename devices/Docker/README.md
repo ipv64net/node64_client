@@ -21,14 +21,14 @@ cd ipv64_client/devices/Docker/
 ```sh
 docker compose build
 ```
-3. Edit the Node #Secret in the docker-compose.yml
+3. Edit the Node #Secret in the docker-compose.yml or create .env file in same directory and insert ipv64NodeSecret=<Node #Secret>
 4. run
 ```sh
 docker compose up -d
 ```
 ## Installation with Prebuild Container CLI
 
-1. Before starting the container you have to replace <Node #Secret> with your Node Secret
+1. Before starting the container you have to replace ${ipv64NodeSecret} with your Node Secret
 ```sh
 docker run -d \
   --name node64_client \
@@ -39,7 +39,7 @@ docker run -d \
 
 ## Installation with Prebuild Container Compose (Protainer)
 
-1. Before starting deploy the compose replace <Node #Secret> with your Node Secret
+1. Before starting deploy the compose replace ${ipv64NodeSecret} with your Node Secret or use .env file
 ```yml
 version: '3.8'
 services:
@@ -48,6 +48,5 @@ services:
     container_name: node64_client
     image: jonathann1203/node64_client:v1
     environment:
-      - ipv64NodeSecret=<Node #Secret>
-
+      - ipv64NodeSecret=${ipv64NodeSecret}
 ```
