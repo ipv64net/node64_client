@@ -3,10 +3,20 @@
 ![alt text](/files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
 ![alt text](/files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
 
-## Hardware Requirements
+## Requirements
+
+### Hardware
 
 - Debian 11
 - 2 GB or more Storage free
+
+### Software
+
+- wget
+
+```sh
+sudo apt install wget
+```
 
 ## Installation
 
@@ -23,8 +33,8 @@ sudo bash install-service.sh -i
 
 ```sh
 systemctl daemon-reload
-systemctl enable node64_client.service
-systemctl enable --now node64_client
+systemctl enable node64_io.service
+systemctl start node64_io.service
 ```
 
 - update the service
@@ -35,7 +45,7 @@ sudo bash install-service.sh -u
 ```
 
 ```sh
-systemctl restart node64_client.service
+systemctl restart node64_io.service
 ```
 
 - print the help message
