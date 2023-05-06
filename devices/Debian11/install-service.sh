@@ -11,9 +11,10 @@ if [[ $EUID -ne 0 ]]; then
 fi
 #this is the auto-install routine
 if ! dpkg -s $apps >/dev/null 2>&1; then
+    echo "Currently the source are updated"
+    apt update -y >/dev/null 2>&1
     echo "The programs to be required will now be installed."
-    apt update -y >/dev/null
-    apt install $apps -y >/dev/null
+    apt install $apps -y >/dev/null 2>&1
 fi
 
 function print_text() {
@@ -43,16 +44,16 @@ function update_ipv64_client() {
 }
 
 function ask_for_secret() {
-    echo "#################"
+    echo "################################################################"
     read -p "Please enter IPv64-Node-Secret: " secret
     echo "Your Secret is: ${secret}"
-    echo "#################"
+    echo "################################################################"
 }
 
 function make_service_file() {
 
     echo "[Unit]" >"${service_file}"
-    echo "Description=Node64 worker client that is receiving tasks for dns, icmp and tracroute task." >>"${service_file}"
+    echo "Description=node64.io client that is receiving tasks for dns, icmp and tracroute task." >>"${service_file}"
     echo "After=network.target" >>"${service_file}"
     echo "StartLimitIntervalSec=0" >>"${service_file}"
     echo "" >>"${service_file}"
@@ -79,6 +80,30 @@ function make_initD_file() {
     echo "}" >>"${initD_file}"
 }
 
+function edit_config() {
+    old_config=$(cat "${service_file}" | head -n10 | tail -n1 | awk '{print $3}')
+    echo "---------------------------------------------------"
+    echo "Your current node64.io Secret is: ""${old_config}"
+    echo "---------------------------------------------------"
+    while true; do
+        read -p "Do you wish to your node64.io Secret? [y|n] " yn
+        case $yn in
+        [Yy]*)
+            ask_for_secret
+            make_service_file
+            make_initD_file
+            break
+            ;;
+        [Nn]*)
+            echo "No changes have been made."
+            exit 0
+            ;;
+        *) echo "Please answer yes or no." ;;
+        esac
+    done
+
+}
+
 display_help() {
     echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update]"
     echo "The Node64.io client is receiving tasks for dns, icmp and tracroute task."
@@ -86,6 +111,7 @@ display_help() {
     echo "  -h | --help    -> show this help text"
     echo "  -i | --install -> install the node64_io on your system"
     echo "  -u | --update  -> update the node64_io to the latest Version"
+    echo "  -e | --edit    -> edit your node64_io config"
     echo
     exit 1
 }
@@ -110,10 +136,12 @@ while :; do
             echo "----------------------------------------------------"
             echo "The installation of the node64_io Client is finished"
             echo "----------------------------------------------------"
-            echo "Enable the service with:"
-            echo "sudo systemctl daemon-reload"
-            echo "sudo systemctl enable node64_io.service"
-            echo "sudo systemctl start node64_io.service"
+            echo "Enable the node64_io service"
+            systemctl daemon-reload
+            sleep 2
+            systemctl enable node64_io.service
+            sleep 2
+            systemctl start node64_io.service
             break
         else
             print_text
@@ -135,8 +163,9 @@ while :; do
             echo "----------------------------------------------"
             echo "The update of the node64_io Client is finished"
             echo "----------------------------------------------"
-            echo "now restart the node64_client Service with:"
-            echo "systemctl restart node64_io.service"
+            echo "now restart the node64_io Service"
+            systemctl restart node64_io.service
+            sleep 2
             break
         else
             print_text
@@ -148,7 +177,23 @@ while :; do
             exit 1
         fi
         ;;
-
+    -e | --edit)
+        print_text
+        echo "***************************"
+        echo "Edit the node64_io Client"
+        echo "***************************"
+        edit_config
+        echo "--------------------------------------------"
+        echo "The edit of the node64_io Client is finished"
+        echo "--------------------------------------------"
+        echo "Reload and restart the node64_io service"
+        systemctl daemon-reload
+        sleep 2
+        systemctl stop node64_io.service
+        sleep 2
+        systemctl start node64_io.service
+        break
+        ;;
     --)
         shift
         break
