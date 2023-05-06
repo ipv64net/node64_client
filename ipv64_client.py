@@ -26,6 +26,7 @@ else:
     node_secret = sys.argv[1]
 
 print("IPv64.net - Initialisierung")
+print(f"using node_secret ${node_secret}")
 # At Start, report IPv4 and IPv6
 functions.report_ipv4(node_secret)
 functions.report_ipv6(node_secret)
