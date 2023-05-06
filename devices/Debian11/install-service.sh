@@ -60,7 +60,7 @@ function make_service_file() {
     echo "Type=simple" >>"${service_file}"
     echo "Restart=always" >>"${service_file}"
     echo "WorkingDirectory=/opt/ipv64_client/" >>"${service_file}"
-    echo "ExecStart=python ipv64_client.py ${secret}" >>"${service_file}"
+    echo "ExecStart=python3 ipv64_client.py ${secret}" >>"${service_file}"
     echo "" >>"${service_file}"
     echo "[Install]" >>"${service_file}"
     echo "WantedBy=network-online.target" >>"${service_file}"
