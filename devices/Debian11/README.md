@@ -3,10 +3,20 @@
 ![alt text](/files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
 ![alt text](/files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
 
-## Hardware Requirements
+## Requirements
+
+### Hardware
 
 - Debian 11
 - 2 GB or more Storage free
+
+### Software
+
+- wget
+
+```sh
+sudo apt install wget
+```
 
 ## Installation
 

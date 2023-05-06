@@ -11,8 +11,23 @@ if [[ $EUID -ne 0 ]]; then
 fi
 #this is the auto-install routine
 if ! dpkg -s $apps >/dev/null 2>&1; then
-    apt install $apps -y
+    echo "The programs to be required will now be installed."
+    apt update -y >/dev/null
+    apt install $apps -y >/dev/null
 fi
+
+function print_text() {
+    echo "______________________________________________________________________________________________________________"
+    echo '                        888           .d8888b.      d8888                    888 d8b                   888    '
+    echo '                        888          d88P  Y88b    d8P888                    888 Y8P                   888    '
+    echo '                        888          888          d8P 888                    888                       888    '
+    echo ' 88888b.   .d88b.   .d88888  .d88b.  888d888b.   d8P  888            .d8888b 888 888  .d88b.  88888b.  888888 '
+    echo ' 888 "88b d88""88b d88" 888 d8P  Y8b 888P "Y88b d88   888           d88P"    888 888 d8P  Y8b 888 "88b 888    '
+    echo ' 888  888 888  888 888  888 88888888 888    888 8888888888          888      888 888 88888888 888  888 888    '
+    echo ' 888  888 Y88..88P Y88b 888 Y8b.     Y88b  d88P       888           Y88b.    888 888 Y8b.     888  888 Y88b.  '
+    echo ' 888  888  "Y88P"   "Y88888  "Y8888   "Y8888P"        888  88888888  "Y8888P 888 888  "Y8888  888  888  "Y888 '
+    echo "______________________________________________________________________________________________________________"
+}
 
 function get_ipv64_client() {
     mkdir /opt
@@ -24,19 +39,21 @@ function get_ipv64_client() {
 
 function update_ipv64_client() {
     cd /opt/ipv64_client/
-    git pull
+    git fetch --all
     pip3 install -r requirements.txt
 }
 
 function ask_for_secret() {
+    echo "#################"
     read -p "Please enter IPv64-Node-Secret: " secret
     echo "Your Secret is: ${secret}"
+    echo "#################"
 }
 
 function make_service_file() {
 
-    echo "[Unit]" >>"${service_file}"
-    echo "Description=Node64 Client Script" >>"${service_file}"
+    echo "[Unit]" >"${service_file}"
+    echo "Description=Node64 worker client that is receiving tasks for dns, icmp and tracroute task." >>"${service_file}"
     echo "After=network.target" >>"${service_file}"
     echo "StartLimitIntervalSec=0" >>"${service_file}"
     echo "" >>"${service_file}"
@@ -52,7 +69,7 @@ function make_service_file() {
 
 function make_initD_file() {
     echo "#!/bin/sh /etc/rc.common" >>"${initD_file}"
-    echo "USE_PROCD=1" >>"${initD_file}"
+    echo "USE_PROCD=1" >"${initD_file}"
     echo "START=95" >>"${initD_file}"
     echo "STOP=01" >>"${initD_file}"
     echo "start_service() {" >>"${initD_file}"
@@ -64,7 +81,8 @@ function make_initD_file() {
 }
 
 display_help() {
-    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] -- Node64 worker client that is receiving tasks for dns, icmp and tracroute task." >&2
+    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update]"
+    echo "Node64 worker client that is receiving tasks for dns, icmp and tracroute task."
     echo
     echo "  -h | --help    -> show this help text"
     echo "  -i | --install -> install the node64_client on your system"
@@ -76,28 +94,41 @@ display_help() {
 while :; do
     case "$1" in
     -h | --help)
+        print_text
         display_help
         exit 0
         ;;
     -i | --install)
-        echo "------------------------"
-        echo "Install the node64_Client"
-        echo "------------------------"
-        get_ipv64_client
-        ask_for_secret
-        make_service_file
-        make_initD_file
-        echo "------------------------"
-        echo "The installation of the node64_client is finished"
-        echo "------------------------"
-        echo "Enable the service with:"
-        echo "systemctl daemon-reload"
-        echo "systemctl enable node64_client.service"
-        echo "systemctl enable --now node64_client"
-        break
+        if [ ! -d "/opt/ipv64_client/.git" ]; then
+            print_text
+            echo "------------------------"
+            echo "Install the node64_Client"
+            echo "------------------------"
+            get_ipv64_client
+            ask_for_secret
+            make_service_file
+            make_initD_file
+            echo "------------------------"
+            echo "The installation of the node64_client is finished"
+            echo "------------------------"
+            echo "Enable the service with:"
+            echo "sudo systemctl daemon-reload"
+            echo "sudo systemctl enable node64_client.service"
+            echo "sudo systemctl start node64_client.service"
+            break
+        else
+            print_text
+            echo "***********************************"
+            echo "The node64_client is already installed on your System."
+            echo "Please update node64_client via -u."
+            echo "***********************************"
+            display_help
+            exit 1
+        fi
         ;;
     -u | --update)
         if [ -d "/opt/ipv64_client/.git" ]; then
+            print_text
             echo "------------------------"
             echo "Update the node64_Client"
             echo "------------------------"
@@ -108,8 +139,11 @@ while :; do
             echo "systemctl restart node64_client.service"
             break
         else
+            print_text
+            echo "***********************************"
             echo "The directory has not been cloned from Github or node64_client has not been installed yet."
-            echo "Please install node64_client via github."
+            echo "Please install node64_client via github with -i."
+            echo "***********************************"
             display_help
             exit 1
         fi
@@ -125,6 +159,7 @@ while :; do
         exit 1
         ;;
     *)
+        echo "Error: There was no option" >&2
         display_help
         exit 1
         ;;
