@@ -70,7 +70,7 @@ function make_service_file() {
 }
 
 function make_initD_file() {
-    echo "#!/bin/sh /etc/rc.common" >>"${initD_file}"
+    echo "#!/bin/sh /etc/rc.common" >"${initD_file}"
     echo "USE_PROCD=1" >"${initD_file}"
     echo "START=95" >>"${initD_file}"
     echo "STOP=01" >>"${initD_file}"
