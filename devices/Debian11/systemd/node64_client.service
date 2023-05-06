@@ -7,7 +7,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 WorkingDirectory=/opt/ipv64_client/
-ExecStart=python ipv64_client.py Node #Secre
+ExecStart=python3 ipv64_client.py Node #Secre
 
 [Install]
 WantedBy=network-online.target
