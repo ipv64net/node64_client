@@ -30,7 +30,9 @@ function print_text() {
 }
 
 function get_ipv64_client() {
-    mkdir /opt
+    if [ ! -d "/opt" ]; then
+        mkdir /opt
+    fi
     cd /opt/
     git clone https://github.com/ipv64net/ipv64_client.git
     cd ipv64_client/
@@ -82,9 +84,9 @@ function make_initD_file() {
 
 function edit_config() {
     old_config=$(cat "${service_file}" | head -n10 | tail -n1 | awk '{print $3}')
-    echo "---------------------------------------------------"
+    echo "------------------------------------------------------------------"
     echo "Your current node64.io Secret is: ""${old_config}"
-    echo "---------------------------------------------------"
+    echo "------------------------------------------------------------------"
     while true; do
         read -p "Do you wish to your node64.io Secret? [y|n] " yn
         case $yn in
@@ -179,20 +181,28 @@ while :; do
         ;;
     -e | --edit)
         print_text
-        echo "***************************"
-        echo "Edit the node64_io Client"
-        echo "***************************"
-        edit_config
-        echo "--------------------------------------------"
-        echo "The edit of the node64_io Client is finished"
-        echo "--------------------------------------------"
-        echo "Reload and restart the node64_io service"
-        systemctl daemon-reload
-        sleep 2
-        systemctl stop node64_io.service
-        sleep 2
-        systemctl start node64_io.service
-        break
+        if [ -f "${service_file}" ]; then
+            echo "***************************"
+            echo "Edit the node64_io Client"
+            echo "***************************"
+            edit_config
+            echo "--------------------------------------------"
+            echo "The edit of the node64_io Client is finished"
+            echo "--------------------------------------------"
+            echo "Reload and restart the node64_io service"
+            systemctl daemon-reload
+            sleep 2
+            systemctl stop node64_io.service
+            sleep 2
+            systemctl start node64_io.service
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64_io Client via github with -i."
+            echo "***************************************************"
+            exit 1
+        fi
         ;;
     --)
         shift
@@ -210,3 +220,5 @@ while :; do
         ;;
     esac
 done
+
+# created by Mr.Phil
