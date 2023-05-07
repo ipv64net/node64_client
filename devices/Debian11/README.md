@@ -3,14 +3,22 @@
 ![alt text](/files/images/ipv64_darkmode.svg#gh-dark-mode-only "Logo")
 ![alt text](/files/images/ipv64_lightmode.svg#gh-light-mode-only "Logo")
 
-## Hardware Requirements
+## Requirements
+
+### Hardware
 
 - Debian 11
 - 2 GB or more Storage free
 
-## Installation
+### Software
 
-=======
+- wget
+
+```sh
+sudo apt install wget
+```
+
+## Installation
 
 1. Execute install script
 
@@ -21,21 +29,11 @@ wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian
 sudo bash install-service.sh -i
 ```
 
-```sh
-systemctl daemon-reload
-systemctl enable node64_client.service
-systemctl enable --now node64_client
-```
-
 - update the service
 
 ```sh
 wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -u
-```
-
-```sh
-systemctl restart node64_client.service
 ```
 
 - print the help message
