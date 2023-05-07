@@ -230,11 +230,13 @@ while :; do
         break
         ;;
     -*)
+        print_text
         echo "Error: Unknown option: $1" >&2
         display_help
         exit 1
         ;;
     *)
+        print_text
         echo "Error: There was no option" >&2
         display_help
         exit 1
