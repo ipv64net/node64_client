@@ -20,8 +20,6 @@ sudo apt install wget
 
 ## Installation
 
-=======
-
 1. Execute install script
 
 - install the service
@@ -31,21 +29,11 @@ wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian
 sudo bash install-service.sh -i
 ```
 
-```sh
-systemctl daemon-reload
-systemctl enable node64_io.service
-systemctl start node64_io.service
-```
-
 - update the service
 
 ```sh
 wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -u
-```
-
-```sh
-systemctl restart node64_io.service
 ```
 
 - print the help message
