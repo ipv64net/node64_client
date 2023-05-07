@@ -82,11 +82,15 @@ function make_initD_file() {
     echo "}" >>"${initD_file}"
 }
 
-function edit_config() {
+function show_current_config_key() {
     old_config=$(cat "${service_file}" | head -n10 | tail -n1 | awk '{print $3}')
     echo "------------------------------------------------------------------"
     echo "Your current node64.io Secret is: ""${old_config}"
     echo "------------------------------------------------------------------"
+}
+
+function edit_config() {
+    show_current_config_key
     while true; do
         read -p "Do you wish to your node64.io Secret? [y|n] " yn
         case $yn in
@@ -113,7 +117,8 @@ display_help() {
     echo "  -h | --help    -> show this help text"
     echo "  -i | --install -> install the node64_io on your system"
     echo "  -u | --update  -> update the node64_io to the latest Version"
-    echo "  -e | --edit    -> edit your node64_io config"
+    echo "  -e | --edit    -> edit your current node64_io config"
+    echo "  -s | --show    -> show your current node64_io config"
     echo
     exit 1
 }
@@ -195,6 +200,22 @@ while :; do
             systemctl stop node64_io.service
             sleep 2
             systemctl start node64_io.service
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64_io Client via github with -i."
+            echo "***************************************************"
+            exit 1
+        fi
+        ;;
+    -s | --show)
+        print_text
+        if [ -f "${service_file}" ]; then
+            echo "*****************************"
+            echo "Show current node64_io Config"
+            echo "*****************************"
+            show_current_config_key
             break
         else
             echo "***************************************************"
