@@ -5,6 +5,7 @@ import sys
 import urllib3
 import signal
 import os
+import hashlib
 
 # import project modules
 import functions
@@ -99,7 +100,8 @@ while True:
 
             if task_result is not None:
                 url = 'https://ipv64.net/dims/task_report_result.php'
-                myobj = {'node_secret': node_secret, 'task_id': _tasks["task_id"], 'task_result': task_result}
+                task_hash = hashlib.sha256(task_result.encode('utf-8')).hexdigest()
+                myobj = {'node_secret': node_secret, 'task_id': _tasks["task_id"], 'task_result': task_result, 'task_hash': task_hash}
                 req = requests.post(url, data=myobj, verify=False)
     if x["verbose"] == 1:
         print(task_result)
