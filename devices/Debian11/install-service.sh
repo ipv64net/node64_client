@@ -76,6 +76,13 @@ function show_current_config_key() {
     echo "------------------------------------------------------------------"
 }
 
+function show_current_status() {
+    node64_status=$(systemctl status node64_io.service | head -n3 | tail -n1 | awk '{print $2}')
+    echo "------------------------------------------------------------------"
+    echo "Your current status of your node64.io client is: ""${node64_status}"
+    echo "------------------------------------------------------------------"
+}
+
 function edit_config() {
     show_current_config_key
     while true; do
@@ -108,14 +115,15 @@ function delete_ipv64_client() {
 }
 
 display_help() {
-    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] [-e | --edit] [-s | --show] [-r | --restart] [-d | --delete]"
+    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] [-e | --edit] [-c | --config] [-r | --restart] [-d | --delete] [-s | --status]"
     echo "The Node64.io client is receiving tasks for dns, icmp and tracroute task."
     echo
     echo "  -h | --help       -> show this help text"
+    echo "  -s | --status     -> show the current node64.io Service status"
     echo "  -i | --install    -> install the node64.io client on your system"
     echo "  -u | --update     -> update the node64.io client to the latest Version"
     echo "  -e | --edit       -> edit your current node64.io config"
-    echo "  -s | --show       -> show your current node64.io config"
+    echo "  -c | --config     -> show your current node64.io config"
     echo "  -r | --restart    -> restart the node64.io Service"
     echo "  -d | --delete     -> delete the node64.io Service"
     echo
@@ -205,7 +213,7 @@ while :; do
             exit 1
         fi
         ;;
-    -s | --show)
+    -c | --config)
         print_text
         if [ -f "${service_file}" ]; then
             echo "*****************************"
@@ -234,6 +242,7 @@ while :; do
             systemctl enable "${service_name}"
             sleep 2
             systemctl start "${service_name}"
+            show_current_status
             break
         else
             echo "***************************************************"
@@ -265,6 +274,23 @@ while :; do
             exit 1
         fi
         ;;
+    -s | --status)
+        print_text
+        if [ -f "${service_file}" ]; then
+            echo "*****************************"
+            echo "Show current node64.io Status"
+            echo "*****************************"
+            show_current_status
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
+            echo "***************************************************"
+            exit 1
+        fi
+        ;;
+
     --)
         shift
         break
