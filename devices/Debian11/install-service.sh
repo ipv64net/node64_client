@@ -210,6 +210,7 @@ while :; do
             echo "The service node64.io has not been installed yet."
             echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
+            display_help
             exit 1
         fi
         ;;
@@ -226,6 +227,7 @@ while :; do
             echo "The service node64.io has not been installed yet."
             echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
+            display_help
             exit 1
         fi
         ;;
@@ -249,6 +251,7 @@ while :; do
             echo "The service node64.io has not been installed yet."
             echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
+            display_help
             exit 1
         fi
         ;;
@@ -287,6 +290,7 @@ while :; do
             echo "The service node64.io has not been installed yet."
             echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
+            display_help
             exit 1
         fi
         ;;
