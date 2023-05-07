@@ -2,8 +2,8 @@
 clear
 ######here all the variables#######################################################################################
 apps="git build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev python3 python3-pip" #add here your application
-service_file="/etc/systemd/system/node64_io.service"
-initD_file="/etc/init.d/node64_io"
+service_name="node64_io.service"
+service_file="/etc/systemd/system/""${service_name}"
 ####################################################################################################################
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
@@ -69,19 +69,6 @@ function make_service_file() {
     echo "WantedBy=network-online.target" >>"${service_file}"
 }
 
-function make_initD_file() {
-    echo "#!/bin/sh /etc/rc.common" >"${initD_file}"
-    echo "USE_PROCD=1" >"${initD_file}"
-    echo "START=95" >>"${initD_file}"
-    echo "STOP=01" >>"${initD_file}"
-    echo "start_service() {" >>"${initD_file}"
-    echo "    procd_open_instance" >>"${initD_file}"
-    echo "    procd_set_param respawn ${threshold:-20} ${timeout:-5} ${retry:-3}" >>"${initD_file}"
-    echo "    procd_set_param command /usr/bin/python3 "/opt/ipv64_client/ipv64_client.py" ${secret}" >>"${initD_file}"
-    echo "    procd_close_instance" >>"${initD_file}"
-    echo "}" >>"${initD_file}"
-}
-
 function show_current_config_key() {
     old_config=$(cat "${service_file}" | head -n10 | tail -n1 | awk '{print $3}')
     echo "------------------------------------------------------------------"
@@ -97,7 +84,6 @@ function edit_config() {
         [Yy]*)
             ask_for_secret
             make_service_file
-            make_initD_file
             break
             ;;
         [Nn]*)
@@ -110,15 +96,28 @@ function edit_config() {
 
 }
 
+function delete_ipv64_client() {
+
+    systemctl stop "${service_name}"
+    sleep 2
+    systemctl disable "${service_name}"
+    sleep 2
+    rm "${service_file}"
+    sleep 2
+    rm -r /opt/ipv64_client/
+}
+
 display_help() {
-    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update]"
+    echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] [-e | --edit] [-s | --show] [-r | --restart] [-d | --delete]"
     echo "The Node64.io client is receiving tasks for dns, icmp and tracroute task."
     echo
-    echo "  -h | --help    -> show this help text"
-    echo "  -i | --install -> install the node64_io on your system"
-    echo "  -u | --update  -> update the node64_io to the latest Version"
-    echo "  -e | --edit    -> edit your current node64_io config"
-    echo "  -s | --show    -> show your current node64_io config"
+    echo "  -h | --help       -> show this help text"
+    echo "  -i | --install    -> install the node64.io client on your system"
+    echo "  -u | --update     -> update the node64.io client to the latest Version"
+    echo "  -e | --edit       -> edit your current node64.io config"
+    echo "  -s | --show       -> show your current node64.io config"
+    echo "  -r | --restart    -> restart the node64.io Service"
+    echo "  -d | --delete     -> delete the node64.io Service"
     echo
     exit 1
 }
@@ -134,27 +133,26 @@ while :; do
         if [ ! -d "/opt/ipv64_client/.git" ]; then
             print_text
             echo "****************************"
-            echo "Install the node64_io Client"
+            echo "Install the node64.io Client"
             echo "****************************"
             get_ipv64_client
             ask_for_secret
             make_service_file
-            make_initD_file
             echo "----------------------------------------------------"
-            echo "The installation of the node64_io Client is finished"
+            echo "The installation of the node64.io Client is finished"
             echo "----------------------------------------------------"
-            echo "Enable the node64_io service"
+            echo "Enable the node64.io service"
             systemctl daemon-reload
             sleep 2
-            systemctl enable node64_io.service
+            systemctl enable "${service_name}"
             sleep 2
-            systemctl start node64_io.service
+            systemctl start "${service_name}"
             break
         else
             print_text
             echo "*********************************************************"
-            echo "The node64_io Client is already installed on your System."
-            echo "Please update node64_io Client via -u."
+            echo "The node64.io Client is already installed on your System."
+            echo "Please update node64.io Client via -u."
             echo "*********************************************************"
             display_help
             exit 1
@@ -164,21 +162,19 @@ while :; do
         if [ -d "/opt/ipv64_client/.git" ]; then
             print_text
             echo "***************************"
-            echo "Update the node64_io Client"
+            echo "Update the node64.io Client"
             echo "***************************"
             update_ipv64_client
             echo "----------------------------------------------"
-            echo "The update of the node64_io Client is finished"
+            echo "The update of the node64.io Client is finished"
             echo "----------------------------------------------"
-            echo "now restart the node64_io Service"
-            systemctl restart node64_io.service
-            sleep 2
+
             break
         else
             print_text
             echo "*********************************************************************************************"
-            echo "The directory has not been cloned from Github or node64_io Client has not been installed yet."
-            echo "Please install node64_io Client via github with -i."
+            echo "The directory has not been cloned from Github or node64.io Client has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
             echo "*********************************************************************************************"
             display_help
             exit 1
@@ -188,23 +184,23 @@ while :; do
         print_text
         if [ -f "${service_file}" ]; then
             echo "***************************"
-            echo "Edit the node64_io Client"
+            echo "Edit the node64.io Client"
             echo "***************************"
             edit_config
             echo "--------------------------------------------"
-            echo "The edit of the node64_io Client is finished"
+            echo "The edit of the node64.io Client is finished"
             echo "--------------------------------------------"
-            echo "Reload and restart the node64_io service"
+            echo "Reload and restart the node64.io service"
             systemctl daemon-reload
             sleep 2
-            systemctl stop node64_io.service
+            systemctl stop "${service_name}"
             sleep 2
-            systemctl start node64_io.service
+            systemctl start "${service_name}"
             break
         else
             echo "***************************************************"
             echo "The service node64.io has not been installed yet."
-            echo "Please install node64_io Client via github with -i."
+            echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
             exit 1
         fi
@@ -213,15 +209,59 @@ while :; do
         print_text
         if [ -f "${service_file}" ]; then
             echo "*****************************"
-            echo "Show current node64_io Config"
+            echo "Show current node64.io Config"
             echo "*****************************"
             show_current_config_key
             break
         else
             echo "***************************************************"
             echo "The service node64.io has not been installed yet."
-            echo "Please install node64_io Client via github with -i."
+            echo "Please install node64.io Client via github with -i."
             echo "***************************************************"
+            exit 1
+        fi
+        ;;
+    -r | --restart)
+        print_text
+        if [ -f "${service_file}" ]; then
+            echo "*********************************"
+            echo "Hardrestart the node64.io Service"
+            echo "*********************************"
+            systemctl daemon-reload
+            sleep 2
+            systemctl disable "${service_name}"
+            sleep 2
+            systemctl enable "${service_name}"
+            sleep 2
+            systemctl start "${service_name}"
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
+            echo "***************************************************"
+            exit 1
+        fi
+        ;;
+
+    -d | --delete)
+        if ([ -d "/opt/ipv64_client/.git" ] && [ -f "${service_file}" ]); then
+            print_text
+            echo "***************************"
+            echo "Delete the node64.io Client"
+            echo "***************************"
+            delete_ipv64_client
+            echo "---------------------------------------------------"
+            echo "The node64.io Client is now removed from the system"
+            echo "---------------------------------------------------"
+            break
+        else
+            print_text
+            echo "*********************************************************************************************"
+            echo "The directory has not been cloned from Github or node64.io Client has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
+            echo "*********************************************************************************************"
+            display_help
             exit 1
         fi
         ;;
