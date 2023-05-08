@@ -91,7 +91,7 @@ def nslookup(query):
         data = []
         result = dns.resolver.resolve_address(query)
         for res in result:
-            data = {"ptr":str(res),"error":"0"}
+            data = {"ptr":str(res),"ptr_ip":str(query),"error":"0"}
     except:
         print("Could not be resolved")
         data = {"error":"Could not be resolved"}
