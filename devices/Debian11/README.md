@@ -67,12 +67,12 @@ pip3 install -r requirements.txt
 5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/Debian11/systemd/node64_client.service) to the folder /etc/systemd/system/
 
 ```sh
-wget -O /etc/systemd/system/node64_client.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
+wget -O /etc/systemd/system/node64_io.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
 ```
 
 6. Edit the Node #Secret in the Servicefile
 7. Enable the Service
 
 ```sh
-systemctl enable --now node64_client
+systemctl enable --now node64_io.service
 ```
