@@ -74,5 +74,5 @@ wget -O /etc/systemd/system/node64_io.service https://raw.githubusercontent.com/
 7. Enable the Service
 
 ```sh
-systemctl enable --now node64_io
+systemctl enable --now node64_io.service
 ```
