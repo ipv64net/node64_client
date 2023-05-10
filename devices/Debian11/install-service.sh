@@ -43,6 +43,7 @@ function update_ipv64_client() {
     cd /opt/ipv64_client/
     git fetch --all
     pip3 install -r requirements.txt
+    systemctl restart node64_io
 }
 
 function ask_for_secret() {
