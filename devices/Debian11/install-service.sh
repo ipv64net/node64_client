@@ -300,7 +300,7 @@ while :; do
             echo "*****************************"
             show_current_status
             while true; do
-                read -p "Do you wish to your node64.io Secret? [start|stop|exit] " ssn
+                read -p "What are you going to do?? [start|stop|exit] " ssn
                 echo ""
                 case $ssn in
                 start)
