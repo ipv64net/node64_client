@@ -17,7 +17,7 @@ if ! dpkg -s $apps >/dev/null 2>&1; then
     apt install $apps -y >/dev/null 2>&1
 fi
 
-function print_text() {
+function print_node64_logo() {
     echo "______________________________________________________"
     echo "                   _         ____    ___     _        "
     echo "                  | |       / ___|  /   |   (_)       "
@@ -63,7 +63,9 @@ function make_service_file() {
     echo "Type=simple" >>"${service_file}"
     echo "Restart=always" >>"${service_file}"
     echo "WorkingDirectory=/opt/ipv64_client/" >>"${service_file}"
-    echo "ExecStart=python3 ipv64_client.py ${secret}" >>"${service_file}"
+    echo "ExecStart=python3 ipv64_client.py ${secret} 2>&1 >> /var/log/ipv64_client-info.log" >>"${service_file}"
+    #echo "StandardOutput=file:/var/log/ipv64_client-info.log" >>"${service_file}"
+    #echo "StandardError=file:/var/log/ipv64_client-error.log" >>"${service_file}"
     echo "" >>"${service_file}"
     echo "[Install]" >>"${service_file}"
     echo "WantedBy=network-online.target" >>"${service_file}"
@@ -87,6 +89,7 @@ function edit_config() {
     show_current_config_key
     while true; do
         read -p "Do you wish to your node64.io Secret? [y|n] " yn
+        echo ""
         case $yn in
         [Yy]*)
             ask_for_secret
@@ -114,8 +117,18 @@ function delete_ipv64_client() {
     rm -r /opt/ipv64_client/
 }
 
+function stop_node64_client() {
+    systemctl stop "${service_name}"
+    sleep 2
+}
+function start_node64_client() {
+    systemctl start "${service_name}"
+    sleep 2
+}
+
 display_help() {
     echo "Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] [-e | --edit] [-c | --config] [-r | --restart] [-d | --delete] [-s | --status]"
+    echo "                          [--start] [--stop]"
     echo "The Node64.io client is receiving tasks for dns, icmp and tracroute task."
     echo
     echo "  -h | --help       -> show this help text"
@@ -126,6 +139,8 @@ display_help() {
     echo "  -c | --config     -> show your current node64.io config"
     echo "  -r | --restart    -> restart the node64.io Service"
     echo "  -d | --delete     -> delete the node64.io Service"
+    echo "  --start           -> start the node64.io Service"
+    echo "  --stop            -> stop the node64.io Service"
     echo
     exit 1
 }
@@ -133,13 +148,13 @@ display_help() {
 while :; do
     case "$1" in
     -h | --help)
-        print_text
+        print_node64_logo
         display_help
         exit 0
         ;;
     -i | --install)
         if [ ! -d "/opt/ipv64_client/.git" ]; then
-            print_text
+            print_node64_logo
             echo "****************************"
             echo "Install the node64.io Client"
             echo "****************************"
@@ -157,7 +172,7 @@ while :; do
             systemctl start "${service_name}"
             break
         else
-            print_text
+            print_node64_logo
             echo "*********************************************************"
             echo "The node64.io Client is already installed on your System."
             echo "Please update node64.io Client via -u."
@@ -168,7 +183,7 @@ while :; do
         ;;
     -u | --update)
         if [ -d "/opt/ipv64_client/.git" ]; then
-            print_text
+            print_node64_logo
             echo "***************************"
             echo "Update the node64.io Client"
             echo "***************************"
@@ -179,7 +194,7 @@ while :; do
 
             break
         else
-            print_text
+            print_node64_logo
             echo "*********************************************************************************************"
             echo "The directory has not been cloned from Github or node64.io Client has not been installed yet."
             echo "Please install node64.io Client via github with -i."
@@ -189,7 +204,7 @@ while :; do
         fi
         ;;
     -e | --edit)
-        print_text
+        print_node64_logo
         if [ -f "${service_file}" ]; then
             echo "***************************"
             echo "Edit the node64.io Client"
@@ -215,7 +230,7 @@ while :; do
         fi
         ;;
     -c | --config)
-        print_text
+        print_node64_logo
         if [ -f "${service_file}" ]; then
             echo "*****************************"
             echo "Show current node64.io Config"
@@ -232,7 +247,7 @@ while :; do
         fi
         ;;
     -r | --restart)
-        print_text
+        print_node64_logo
         if [ -f "${service_file}" ]; then
             echo "*********************************"
             echo "Hardrestart the node64.io Service"
@@ -258,7 +273,7 @@ while :; do
 
     -d | --delete)
         if ([ -d "/opt/ipv64_client/.git" ] && [ -f "${service_file}" ]); then
-            print_text
+            print_node64_logo
             echo "***************************"
             echo "Delete the node64.io Client"
             echo "***************************"
@@ -268,7 +283,7 @@ while :; do
             echo "---------------------------------------------------"
             break
         else
-            print_text
+            print_node64_logo
             echo "*********************************************************************************************"
             echo "The directory has not been cloned from Github or node64.io Client has not been installed yet."
             echo "Please install node64.io Client via github with -i."
@@ -278,11 +293,56 @@ while :; do
         fi
         ;;
     -s | --status)
-        print_text
+        print_node64_logo
         if [ -f "${service_file}" ]; then
             echo "*****************************"
             echo "Show current node64.io Status"
             echo "*****************************"
+            show_current_status
+            while true; do
+                read -p "Do you wish to your node64.io Secret? [start|stop|exit] " ssn
+                echo ""
+                case $ssn in
+                start)
+                    echo "*******************************"
+                    echo "Now START the node64.io Service"
+                    echo "*******************************"
+                    start_node64_client
+                    show_current_status
+                    break
+                    ;;
+                stop)
+                    echo "******************************"
+                    echo "Now STOP the node64.io Service"
+                    echo "******************************"
+                    stop_node64_client
+                    show_current_status
+                    break
+                    ;;
+                exit)
+                    echo "There's nothing do do."
+                    exit 0
+                    ;;
+                *) echo "Please answer start, stop or exit." ;;
+                esac
+            done
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
+            echo "***************************************************"
+            display_help
+            exit 1
+        fi
+        ;;
+    --start)
+        print_node64_logo
+        if [ -f "${service_file}" ]; then
+            echo "*******************************"
+            echo "Now START the node64.io Service"
+            echo "*******************************"
+            start_node64_client
             show_current_status
             break
         else
@@ -294,19 +354,36 @@ while :; do
             exit 1
         fi
         ;;
-
+    --stop)
+        print_node64_logo
+        if [ -f "${service_file}" ]; then
+            echo "******************************"
+            echo "Now STOP the node64.io Service"
+            echo "******************************"
+            stop_node64_client
+            show_current_status
+            break
+        else
+            echo "***************************************************"
+            echo "The service node64.io has not been installed yet."
+            echo "Please install node64.io Client via github with -i."
+            echo "***************************************************"
+            display_help
+            exit 1
+        fi
+        ;;
     --)
         shift
         break
         ;;
     -*)
-        print_text
+        print_node64_logo
         echo "Error: Unknown option: $1" >&2
         display_help
         exit 1
         ;;
     *)
-        print_text
+        print_node64_logo
         echo "Error: There was no option" >&2
         display_help
         exit 1
