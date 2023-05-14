@@ -5,6 +5,7 @@ clear
 apps="git build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev python3 python3-pip" #add here your application
 service_name="node64_io.service"
 service_file="/etc/systemd/system/${service_name}"
+log_file_path="/opt/ipv64_client/node64.log"
 ####################################################################################################################
 if [ $EUID -ne 0 ]; then
     echo "This script must be run as root"
@@ -71,7 +72,7 @@ ExecStart=$(which python3) ipv64_client.py ${secret}
 [Install]
 WantedBy=network-online.target
 EOF
-
+    #ExecStart=$(which python3) ipv64_client.py ${secret} | tee -a ${log_file_path}
 }
 
 function show_current_config_key() {
@@ -126,10 +127,10 @@ function start_node64_client() {
 
 function display_help() {
     cat <<EOF
-
-Usage: install-service.sh [-h | --help] [-i | --install] [-u | --update] [-e | --edit] [-c | --config] 
-                          [-r | --restart] [-d | --delete] [-s | --status] [--start] [--stop]"
 The Node64.io client is receiving tasks for dns, icmp and tracroute task."
+
+Usage: install-service.sh [-h | --help]    [-i | --install] [-u | --update] [-e | --edit] [-c | --config] 
+                          [-r | --restart] [-d | --delete]  [-s | --status] [--start]     [--stop]
 
  -h | --help       -> show this help text"
  -s | --status     -> show the current node64.io Service status"
@@ -213,10 +214,7 @@ while :; do
             echo "--------------------------------------------"
             echo "Reload and restart the node64.io service"
             systemctl daemon-reload
-            sleep 2
-            systemctl stop "${service_name}"
-            sleep 2
-            systemctl start "${service_name}"
+            systemctl enable --now "${service_name}"
             break
         else
             echo "***************************************************"
@@ -250,10 +248,7 @@ while :; do
             echo "*********************************"
             echo "Hardrestart the node64.io Service"
             echo "*********************************"
-            systemctl daemon-reload
-            systemctl disable "${service_name}"
-            systemctl enable "${service_name}"
-            systemctl start "${service_name}"
+            systemctl restart "${service_name}"
             show_current_status
             break
         else
