@@ -129,8 +129,8 @@ function display_help() {
     cat <<EOF
 The Node64.io client is receiving tasks for dns, icmp and tracroute task."
 
-Usage: install-service.sh [-h | --help]    [-i | --install] [-u | --update] [-e | --edit] [-c | --config] 
-                          [-r | --restart] [-d | --delete]  [-s | --status] [--start]     [--stop]
+Usage: install-service.sh [-h | --help]    [-i | --install] [-u | --update] [-e | --edit]   [--stop]
+                          [-r | --restart] [-d | --delete]  [-s | --status] [-c | --config] [--start]
 
  -h | --help       -> show this help text"
  -s | --status     -> show the current node64.io Service status"
