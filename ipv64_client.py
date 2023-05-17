@@ -40,11 +40,11 @@ def backend_chek(url):
     r = requests.head(url)
     statusCode = r.status_code
     if statusCode == 200:
-       print("alles in ordung!")
+       print("everything OK")
     if statusCode == 404:
-       sys.exit("Master ist nicht zu ereichen")
+       sys.exit("Master cannot be reached")
     else:
-       print("Ein Febindungsfehler ist aufgetreten: " statusCode)
+       print("a connection error occurred with the number: " statusCode)
 backend_chek("https://ipv64.net/dims/get_task.php")
 
 while True:
