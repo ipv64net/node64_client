@@ -34,6 +34,19 @@ functions.report_ipv4(node_secret)
 functions.report_ipv6(node_secret)
 functions.report_version(node_secret)
 
+##IDEE für Fehlerausgaben!
+
+def backend_chek(url):
+    r = requests.head(url)
+    statusCode = r.status_code
+    if statusCode == 200:
+       print("alles IO prgramm leuft an")
+    if statusCode == 404:
+       sys.exit("Master ist nicht zu ereichen")
+    else:
+       print("Ein Febindungs Fehler ist aufgetreten: " statusCode)
+backend_chek("https://ipv64.net/dims/get_task.php")
+
 while True:
     url = 'https://ipv64.net/dims/get_task.php'
     myobj = {'node_secret': node_secret}
