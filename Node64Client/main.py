@@ -17,7 +17,7 @@ from os import geteuid
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-class ipv64NodeClient:
+class Node64Client:
     SecretKey = ''
     BaseURL = 'https://ipv64.net/dims/'
     GetTaskURL = BaseURL + 'get_task.php'
@@ -173,9 +173,10 @@ class ipv64NodeClient:
                         print(f"\tSend result: {result}")
                     else:
                         print(f"Finished Task {task['task_id']} in {(time.time() - start_time)} seconds")
-                    msg = self.sendResult(task,result)
-                    if self._debug and msg.status_code != 200: 
-                        print(f"\tAnswer: {msg.status_code} {msg.content.decode()}")
+                    response = self.sendResult(task,result)
+                    if self._debug and response.status_code != 200: 
+                        print(f"\tAnswer: {response.status_code} {response.content.decode()}")
+                    self.stats(self,task,result,response,(time.time() - start_time))
             except Exception as err:
                 if self._debug:
                     print(f"Unexpected {err=}, {type(err)=}")
@@ -199,14 +200,17 @@ class ipv64NodeClient:
                 time.sleep(self._task['wait'])
             else:
                 time.sleep(self.DefaultWait)
-
+    def stats(self,task,result,response,runtime):
+        pass
+        return
+        print(f"{task}{result}{response}{runtime}")
 
 
 if __name__ == "__main__":
     if geteuid() != 0:
         exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
     else:
-        client = ipv64NodeClient('')
+        client = Node64Client('')
         client.run()
 
         
