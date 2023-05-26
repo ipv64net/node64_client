@@ -153,7 +153,7 @@ class Node64Client:
             try:
                 print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
                 start_time = time.time()
-
+                # scheiss python syntaxcheck will kein match daher if + elifs
                 if task['task_type'] == 'icmpv4':
                     result = self.icmp(task['task_infos'], 4) 
                 elif task['task_type'] == 'icmpv6':
@@ -200,6 +200,7 @@ class Node64Client:
                 time.sleep(self._task['wait'])
             else:
                 time.sleep(self.DefaultWait)
+
     def stats(self,task,result,response,runtime):
         pass
         return
