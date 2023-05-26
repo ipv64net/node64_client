@@ -12,7 +12,7 @@ import time
 import urllib3
 import sys
 from os import geteuid
-from time import time as runtime
+
 
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -50,11 +50,13 @@ class ipv64NodeClient:
             print('\nExit Programm')
             sys.exit(0)
         self.signal_exit = True
+
     def sendData(self,url,data):
         try:
             return httppost(url, data = data, verify=False, timeout=self.Timeout)
         except:
             return ''
+        
     def getTask(self):
         result = self.sendData(self.GetTaskURL,{'node_secret': self.SecretKey})
         return result.json()
@@ -144,14 +146,13 @@ class ipv64NodeClient:
                 print(f"Unexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
-
     
     def runtask(self,tasks):
         for task in tasks:
             result = None
             try:
                 print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
-                start_time = runtime()
+                start_time = time.time()
                 match task['task_type']:
                     case 'icmpv4':
                         result = self.icmp(task['task_infos'], 4) 
@@ -171,7 +172,7 @@ class ipv64NodeClient:
                     if self._debug: 
                         print(f"\tSend result: {result}")
                     else:
-                        print(f"Finished Task {task['task_id']} in {(runtime() - start_time)} seconds")
+                        print(f"Finished Task {task['task_id']} in {(time.time() - start_time)} seconds")
                     msg = self.sendResult(task,result)
                     if self._debug and msg.status_code != 200: 
                         print(f"\tAnswer: {msg.status_code} {msg.content.decode()}")
