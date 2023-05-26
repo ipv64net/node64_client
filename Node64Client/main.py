@@ -153,22 +153,21 @@ class Node64Client:
             try:
                 print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
                 start_time = time.time()
-                tasktype = task['task_type']
-                match tasktype:
-                    case 'icmpv4':
-                        result = self.icmp(task['task_infos'], 4) 
-                    case 'icmpv6':
-                        result = self.icmp(task['task_infos'], 6) 
-                    case 'traceroute':
-                        result = self.traceroute(task['task_infos']) 
-                    case 'dns':
-                        result = self.dns(task['task_infos']) 
-                    case 'nslookup':
-                        result = self.nslookup(task['task_infos']) 
-                    case _:
-                        if self._debug: 
-                            print(f"ERROR: {task['task_type']} unknow")
-                            print(f"task data: {task}")
+
+                if task['task_type'] == 'icmpv4':
+                    result = self.icmp(task['task_infos'], 4) 
+                elif task['task_type'] == 'icmpv6':
+                    result = self.icmp(task['task_infos'], 6) 
+                elif task['task_type'] == 'traceroute':
+                    result = self.traceroute(task['task_infos']) 
+                elif task['task_type'] == 'dns':
+                    result = self.dns(task['task_infos']) 
+                elif task['task_type'] == 'nslookup':
+                    result = self.nslookup(task['task_infos']) 
+                elif self._debug: 
+                    print(f"ERROR: {task['task_type']} unknow")
+                    print(f"task data: {task}")
+
                 if result:
                     if self._debug: 
                         print(f"\tSend result: {result}")
