@@ -153,7 +153,8 @@ class Node64Client:
             try:
                 print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
                 start_time = time.time()
-                match task['task_type']:
+                tasktype = task['task_type']
+                match tasktype:
                     case 'icmpv4':
                         result = self.icmp(task['task_infos'], 4) 
                     case 'icmpv6':
