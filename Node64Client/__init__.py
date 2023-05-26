@@ -29,6 +29,7 @@ class Node64Client:
     signal_exit = False
     _task = ''
     _debug = 0
+    _sleep = False
 
     def __init__(self,SecretKey):
         self.SecretKey = SecretKey
@@ -41,7 +42,7 @@ class Node64Client:
 
     def signal_handler(self,sig, frame):
         if sig == signal.SIGINT:
-            if not self.signal_exit:
+            if not self.signal_exit and not self._sleep:
                 print('\nYou pressed Ctrl+C!\nTry Exit Programm...\nOr press again to force Exit!')
             else:
                 print('\nYou pressed Ctrl+C again!\nExit Programm')
@@ -197,9 +198,13 @@ class Node64Client:
             if self.signal_exit:
                 return
             if 'wait' in self._task and self._task['wait'] > 0: 
+                self._sleep = True
                 time.sleep(self._task['wait'])
+                self._sleep = False
             else:
+                self._sleep = True
                 time.sleep(self.DefaultWait)
+                self._sleep = False
 
     def stats(self,task,result,response,runtime):
         pass
