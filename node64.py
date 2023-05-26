@@ -1,8 +1,10 @@
-import Node64Client
+from Node64Client import Node64Client
 from os import geteuid
 
 
 class myclient(Node64Client):
+    def __init__(self,SecretKey):
+        super().__init__(SecretKey)
     def stats(self,task,result,response,runtime):
         print(f"task {task}")
         print(f"result {result}")
@@ -13,5 +15,5 @@ if __name__ == "__main__":
     if geteuid() != 0:
         exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
     else:
-        client = myclient('DeinSecretKey')
+        client = myclient('')
         client.run()
