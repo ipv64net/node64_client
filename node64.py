@@ -3,8 +3,6 @@ from os import geteuid
 
 
 class myclient(Node64Client):
-    def __init__(self,SecretKey):
-        super().__init__(SecretKey)
     def stats(self,task,result,response,runtime):
         print(f"task {task}")
         print(f"result {result}")
