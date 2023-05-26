@@ -11,7 +11,7 @@ else:
     node_secret = sys.argv[1]
 
 class myclient(Node64Client):
-    def stats(self,task,result,response,runtime):
+    def stats(self,_,task,result,response,runtime):
         print(f"task {task}")
         print(f"result {result}")
         print(f"response {response}")

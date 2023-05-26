@@ -207,9 +207,8 @@ class Node64Client:
                 self._sleep = False
 
     def stats(self,task,result,response,runtime):
-        pass
-        return
-        print(f"{task}{result}{response}{runtime}")
+        super().stats(task,result,response,runtime)
+        
 
 
 if __name__ == "__main__":
