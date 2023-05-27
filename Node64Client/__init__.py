@@ -203,7 +203,7 @@ class Node64Client:
             self._sleep = False
 
     def stats(self,task,result,response,runtime):
-        super().stats(task,result,response,runtime)
+        pass
         
 
 
