@@ -197,14 +197,10 @@ class Node64Client:
 
             if self.signal_exit:
                 return
-            if 'wait' in self._task and self._task['wait'] > 0: 
-                self._sleep = True
-                time.sleep(self._task['wait'])
-                self._sleep = False
-            else:
-                self._sleep = True
-                time.sleep(self.DefaultWait)
-                self._sleep = False
+
+            self._sleep = True
+            time.sleep(self._task['wait'] if 'wait' in self._task and self._task['wait'] > 0 else self.DefaultWait)
+            self._sleep = False
 
     def stats(self,task,result,response,runtime):
         super().stats(task,result,response,runtime)
