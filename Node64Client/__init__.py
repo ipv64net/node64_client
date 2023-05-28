@@ -171,6 +171,7 @@ class Node64Client:
             return json.dumps(task_result)
         except:
             return json.dumps({"error_msg":"timeout"})
+
     def runtask(self,tasks):
         for task in tasks:
             result = None
