@@ -12,7 +12,7 @@ import time
 import urllib3
 import sys
 from os import geteuid
-
+import ipwhois
 
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -154,7 +154,23 @@ class Node64Client:
                 print(f"Unexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
-    
+
+    def whois(self,task):
+        try:
+            obj = ipwhois.IPWhois(task["whois_dst"],5)
+            results = obj.lookup_rdap()
+            task_result = {
+                    'query': results['query'],
+                    'asn_description': results['asn_description'],
+                    'asn_cidr': results['asn_cidr'],
+                    'asn': results['asn'],
+                    'handle': results['network']['handle'],
+                    'name': results['network']['name'],
+                    'address': results['objects'][results['entities'][0]]['contact']['address'][0]['value']
+            }
+            return json.dumps(task_result)
+        except:
+            return json.dumps({"error_msg":"timeout"})
     def runtask(self,tasks):
         for task in tasks:
             result = None
@@ -172,6 +188,8 @@ class Node64Client:
                     result = self.dns(task['task_infos']) 
                 elif task['task_type'] == 'nslookup':
                     result = self.nslookup(task['task_infos']) 
+                elif task['task_type'] == 'whois':
+                    result = self.whois(task['task_infos']) 
                 elif self._debug: 
                     print(f"ERROR: {task['task_type']} unknow")
                     print(f"task data: {task}")
