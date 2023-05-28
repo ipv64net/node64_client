@@ -26,6 +26,5 @@ if __name__ == "__main__":
         from os import geteuid
         if geteuid() != 0:
             exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
-    else:
-        client = myclient(nodeSecret,nodeColor)
-        client.run()
+    client = myclient(nodeSecret,nodeColor)
+    client.run()
