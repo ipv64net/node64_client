@@ -1,5 +1,5 @@
 from Node64Client import Node64Client
-from os import geteuid, getenv
+from os import geteuid, getenv, name as osname
 import sys
 
 nodeColor = False # Default Disable
@@ -16,7 +16,7 @@ else:
     
 
 if __name__ == "__main__":
-    if geteuid() != 0:
+    if osname != 'NT' and geteuid() != 0:
         exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
     else:
         client = Node64Client(nodeSecret,nodeColor)
