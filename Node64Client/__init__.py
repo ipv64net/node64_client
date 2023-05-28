@@ -43,13 +43,15 @@ class Node64Client:
 
     def __init__(self,SecretKey,colorOutput = False):
         self.SecretKey = SecretKey
-        self.colorOutput = colorOutput
+        if not colorOutput:
+            CINFO = CDEBUG = COK = CWARNING = CERROR = ENDC = ''  
         self.printInfo(f"SecretKey: {self.SecretKey}")
         self.report_ipv4()
         self.report_ipv6()
         self.report_version()
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
+        time.sleep(3) # Start Delay
 
     def signal_handler(self,sig, frame):
         if sig == signal.SIGINT:
@@ -65,35 +67,20 @@ class Node64Client:
 
     def printDebug(self,msg):
         if self._debug:
-            if self.colorOutput:
-                print(f'{self.CDEBUG}{msg}{self.ENDC}')
-            else: 
-                print(f'{msg}')
+            print(f'{self.CDEBUG}{msg}{self.ENDC}')
 
     def printNormal(self,msg):
-        if self.colorOutput:
-            print(f'{self.COK}{msg}{self.ENDC}')
-        else: 
-            print(f'{msg}')
-
+        print(f'{self.COK}{msg}{self.ENDC}')
+        
     def printInfo(self,msg):
-        if self.colorOutput:
-            print(f'{self.CINFO}{msg}{self.ENDC}')
-        else: 
-            print(f'{msg}')
-
+        print(f'{self.CINFO}{msg}{self.ENDC}')
+        
     def printWarn(self,msg):
-        if self.colorOutput:
-            print(f'{self.CWARNING}{msg}{self.ENDC}')
-        else: 
-            print(f'{msg}')
-
+        print(f'{self.CWARNING}{msg}{self.ENDC}')
+        
     def printError(self,msg):
-        if self.colorOutput:
-            print(f'{self.CERROR}{msg}{self.ENDC}')
-        else: 
-            print(f'{msg}')
-
+        print(f'{self.CERROR}{msg}{self.ENDC}')
+        
     def sendData(self,url,data):
         http = 0
         try:
@@ -145,7 +132,9 @@ class Node64Client:
                           payload_size=task["icmp_size"], 
                           family=family)
             return json.dumps({"rtt_avg":result.avg_rtt,"rtt_min":result.min_rtt,"rtt_max":result.max_rtt,"packet_loss":result.packet_loss,"jitter":result.jitter,"error_msg":"0"})
-        except:
+        except Exception as err:
+            if self._debug: 
+                self.printError(f"\tUnexpected {err=}, {type(err)=}")
             return json.dumps({"error_msg":"timeout","packet_loss":packet_loss})
 
     def traceroute(self,task):
@@ -169,7 +158,9 @@ class Node64Client:
                 last_distance = hop.distance
             end_hops = {"hops":last_distance}
             result.append(end_hops)
-        except:
+        except Exception as err:
+            if self._debug:
+                self.printError(f"\tUnexpected {err=}, {type(err)=}")
             result = {"error_msg":"timeout","packet_loss":"1"}
         return json.dumps(result)
 
@@ -184,7 +175,7 @@ class Node64Client:
             result = {"rrset":records,"latency":response_time,"error":"no"}
         except Exception as err:
             if self._debug:
-                self.printError(f"Unexpected {err=}, {type(err)=}")
+                self.printError(f"\tUnexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
         
@@ -196,7 +187,7 @@ class Node64Client:
                 result = {"ptr":str(res),"ptr_ip":str(task['ns_ip']),"error":"0"}
         except Exception as err:
             if self._debug: 
-                self.printError(f"Unexpected {err=}, {type(err)=}")
+                self.printError(f"\tUnexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
 
@@ -214,7 +205,9 @@ class Node64Client:
                     'address': results['objects'][results['entities'][0]]['contact']['address'][0]['value']
             }
             return json.dumps(task_result)
-        except:
+        except Exception as err:
+            if self._debug: 
+                self.printError(f"\tUnexpected {err=}, {type(err)=}")
             return json.dumps({"error_msg":"timeout"})
 
     def runtask(self,tasks):
@@ -222,7 +215,7 @@ class Node64Client:
             result = None
             try:
                 self.printNormal(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
-                self.printDebug(f"\tTaskinfo: {task['task_infos']}")
+                self.printDebug(f"\tTaskinfo: {self.ENDC}{task['task_infos']}")
                 start_time = time.time()
                 # scheiss python syntaxcheck will kein match daher if + elifs
                 if task['task_type'] == 'icmpv4':
@@ -243,7 +236,7 @@ class Node64Client:
 
                 if result:
                     if self._debug: 
-                        self.printDebug(f"\tSend result: {result}")
+                        self.printDebug(f"\tSend result: {self.ENDC}{result}")
                     self.printNormal(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
                     response = self.sendResult(task,result)
                     if hasattr(response, "status_code") and response.status_code != 200: 
