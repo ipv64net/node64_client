@@ -59,8 +59,15 @@ class Node64Client:
             return ''
         
     def getTask(self):
-        result = self.sendData(self.GetTaskURL,{'node_secret': self.SecretKey})
-        return result.json()
+        try:
+            result = self.sendData(self.GetTaskURL,{'node_secret': self.SecretKey})
+            if result.content:
+                return result.json()
+            if self._debug:
+                print(f"Error sendData {result}")
+            return '{}'.json()
+        except:
+            pass
 
     def report_version(self):
         self.sendData(self.ReportURL,{'node_secret' : self.SecretKey,'version':self.Version})
@@ -175,7 +182,7 @@ class Node64Client:
                     else:
                         print(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
                     response = self.sendResult(task,result)
-                    if self._debug and response.status_code != 200: 
+                    if self._debug and hasattr(response, "status_code") and response.status_code != 200: 
                         print(f"\tAnswer: {response.status_code} {response.content.decode()}")
                     self.stats(task,result,response,round(time.time() - start_time,4))
             except Exception as err:
@@ -208,10 +215,6 @@ class Node64Client:
 
 
 if __name__ == "__main__":
-    if geteuid() != 0:
-        exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
-    else:
-        client = Node64Client('')
-        client.run()
+    exit("This is only a module")
 
         
