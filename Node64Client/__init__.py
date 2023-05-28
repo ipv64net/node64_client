@@ -173,11 +173,11 @@ class Node64Client:
                     if self._debug: 
                         print(f"\tSend result: {result}")
                     else:
-                        print(f"Finished Task {task['task_id']} in {(time.time() - start_time)} seconds")
+                        print(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
                     response = self.sendResult(task,result)
                     if self._debug and response.status_code != 200: 
                         print(f"\tAnswer: {response.status_code} {response.content.decode()}")
-                    self.stats(self,task,result,response,(time.time() - start_time))
+                    self.stats(self,task,result,response,round(time.time() - start_time,4))
             except Exception as err:
                 if self._debug:
                     print(f"Unexpected {err=}, {type(err)=}")
