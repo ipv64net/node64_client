@@ -53,12 +53,14 @@ class Node64Client:
         self.signal_exit = True
 
     def sendData(self,url,data):
+        http = 0
         try:
-            #print(url)
-            #print(data)
-            return httppost(url, data = data, verify=False, timeout=self.Timeout)
+            http = httppost(url, data = data, verify=False, timeout=self.Timeout)
+            return http
         except:
-            return ''
+            if hasattr(http,'status_code'):
+                return {"error": http.status_code, "wait": self.DefaultWait , "verbose": 1}
+            return {"error": 408, "wait": self.DefaultWait , "verbose": 1}
         
     def getTask(self):
         try:
@@ -67,9 +69,9 @@ class Node64Client:
                 return result.json()
             if self._debug:
                 print(f"Error sendData {result}")
-            return {"error": 1, "wait": self.DefaultWait , "verbose": 1}
+            return {"error": 42, "wait": self.DefaultWait , "verbose": 1}
         except:
-            pass
+            return {"error": 43, "wait": self.DefaultWait , "verbose": 1}
 
     def report_version(self):
         self.sendData(self.ReportURL,{'node_secret' : self.SecretKey,'version':self.Version})
@@ -179,6 +181,8 @@ class Node64Client:
             result = None
             try:
                 print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
+                if self._debug:
+                    print(f"\tTaskinfo: {task['task_infos']}")
                 start_time = time.time()
                 # scheiss python syntaxcheck will kein match daher if + elifs
                 if task['task_type'] == 'icmpv4':
@@ -200,8 +204,7 @@ class Node64Client:
                 if result:
                     if self._debug: 
                         print(f"\tSend result: {result}")
-                    else:
-                        print(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
+                    print(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
                     response = self.sendResult(task,result)
                     if self._debug and hasattr(response, "status_code") and response.status_code != 200: 
                         print(f"\tAnswer: {response.status_code} {response.content.decode()}")
@@ -213,14 +216,12 @@ class Node64Client:
     def run(self):
         while not self.signal_exit:
             self._task = self.getTask()
-            print(self._task)
+            #print(self._task)
 
             if self._task['error'] > 0: 
                 print(f"ipv64 report a {self._task['error']} errorcode")
             else:
                 self._debug = int(self._task['verbose'])
-                if self._debug:
-                    print(f"receive Task: {self._task}")
                 self.runtask(self._task['tasks'])
             if self.signal_exit:
                 return
