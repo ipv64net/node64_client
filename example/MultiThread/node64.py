@@ -41,6 +41,6 @@ if __name__ == "__main__":
     else:
         threadserver = threading.Thread(target=runserver)
         threadserver.start()
-        client = Node64Client(nodeSecret,nodeColor)
+        client = myClient(nodeSecret,nodeColor)
         client.run()
         threadserver.do_run = False
