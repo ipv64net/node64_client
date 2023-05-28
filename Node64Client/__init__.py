@@ -16,6 +16,8 @@ import ipwhois
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
+
 class Node64Client:
     SecretKey = ''
     BaseURL = 'https://ipv64.net/dims/'
@@ -30,9 +32,19 @@ class Node64Client:
     _debug = 0
     _sleep = False
 
-    def __init__(self,SecretKey):
+    #Shell Colors
+    CINFO = '\033[95m'      # Light Magenta
+    CDEBUG = '\033[96m'     # Light Cyan
+    COK = '\033[92m'        # Light Green
+    CWARNING = '\033[93m'   # Light Yellow
+    CERROR = '\033[91m'     # Light Red
+    ENDC = '\033[0m'        # Stop Color
+
+
+    def __init__(self,SecretKey,colorOutput = False):
         self.SecretKey = SecretKey
-        print(f"SecretKey: {self.SecretKey}")
+        self.colorOutput = colorOutput
+        self.printInfo(f"SecretKey: {self.SecretKey}")
         self.report_ipv4()
         self.report_ipv6()
         self.report_version()
@@ -42,14 +54,45 @@ class Node64Client:
     def signal_handler(self,sig, frame):
         if sig == signal.SIGINT:
             if not self.signal_exit and not self._sleep:
-                print('\nYou pressed Ctrl+C!\nTry Exit Programm...\nOr press again to force Exit!')
+                self.printWarn('\nYou pressed Ctrl+C!\nTry Exit Programm...\nOr press again to force Exit!')
             else:
-                print('\nYou pressed Ctrl+C again!\nExit Programm')
+                self.printWarn('\nYou pressed Ctrl+C again!\nExit Programm')
                 sys.exit(0)
         if sig == signal.SIGTERM:
-            print('\nExit Programm')
+            self.printNormal('\nExit Programm')
             sys.exit(0)
         self.signal_exit = True
+
+    def printDebug(self,msg):
+        if self._debug:
+            if self.colorOutput:
+                print(f'{self.CDEBUG}{msg}{self.ENDC}')
+            else: 
+                print(f'{msg}')
+
+    def printNormal(self,msg):
+        if self.colorOutput:
+            print(f'{self.COK}{msg}{self.ENDC}')
+        else: 
+            print(f'{msg}')
+
+    def printInfo(self,msg):
+        if self.colorOutput:
+            print(f'{self.CINFO}{msg}{self.ENDC}')
+        else: 
+            print(f'{msg}')
+
+    def printWarn(self,msg):
+        if self.colorOutput:
+            print(f'{self.CWARNING}{msg}{self.ENDC}')
+        else: 
+            print(f'{msg}')
+
+    def printError(self,msg):
+        if self.colorOutput:
+            print(f'{self.CERROR}{msg}{self.ENDC}')
+        else: 
+            print(f'{msg}')
 
     def sendData(self,url,data):
         http = 0
@@ -67,7 +110,7 @@ class Node64Client:
             if result.content:
                 return result.json()
             if self._debug:
-                print(f"Error sendData {result}")
+                self.printError(f"Error sendData {result}")
             return {"error": 42, "wait": self.DefaultWait , "verbose": 1}
         except:
             return {"error": 43, "wait": self.DefaultWait , "verbose": 1}
@@ -141,7 +184,7 @@ class Node64Client:
             result = {"rrset":records,"latency":response_time,"error":"no"}
         except Exception as err:
             if self._debug:
-                print(f"Unexpected {err=}, {type(err)=}")
+                self.printError(f"Unexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
         
@@ -153,7 +196,7 @@ class Node64Client:
                 result = {"ptr":str(res),"ptr_ip":str(task['ns_ip']),"error":"0"}
         except Exception as err:
             if self._debug: 
-                print(f"Unexpected {err=}, {type(err)=}")
+                self.printError(f"Unexpected {err=}, {type(err)=}")
             result = {"error":"Could not be resolved"}
         return json.dumps(result)
 
@@ -178,9 +221,8 @@ class Node64Client:
         for task in tasks:
             result = None
             try:
-                print(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
-                if self._debug:
-                    print(f"\tTaskinfo: {task['task_infos']}")
+                self.printNormal(f"Run Task ID: {task['task_id']} Type: {task['task_type']}")
+                self.printDebug(f"\tTaskinfo: {task['task_infos']}")
                 start_time = time.time()
                 # scheiss python syntaxcheck will kein match daher if + elifs
                 if task['task_type'] == 'icmpv4':
@@ -196,20 +238,20 @@ class Node64Client:
                 elif task['task_type'] == 'whois':
                     result = self.whois(task['task_infos']) 
                 elif self._debug: 
-                    print(f"ERROR: {task['task_type']} unknow")
-                    print(f"task data: {task}")
+                    self.printError(f"ERROR: {task['task_type']} unknow")
+                    self.printError(f"task data: {task}")
 
                 if result:
                     if self._debug: 
-                        print(f"\tSend result: {result}")
-                    print(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
+                        self.printDebug(f"\tSend result: {result}")
+                    self.printNormal(f"Finished Task {task['task_id']} in {round(time.time() - start_time,4)} seconds")
                     response = self.sendResult(task,result)
-                    if self._debug and hasattr(response, "status_code") and response.status_code != 200: 
-                        print(f"\tAnswer: {response.status_code} {response.content.decode()}")
+                    if hasattr(response, "status_code") and response.status_code != 200: 
+                        self.printDebug(f"\tAnswer: {response.status_code} {response.content.decode()}")
                     self.stats(task,result,response,round(time.time() - start_time,4))
             except Exception as err:
                 if self._debug:
-                    print(f"Unexpected {err=}, {type(err)=}")
+                    self.printError(f"Unexpected {err=}, {type(err)=}")
     
     def run(self):
         while not self.signal_exit:
@@ -217,7 +259,7 @@ class Node64Client:
             #print(self._task)
 
             if self._task['error'] > 0: 
-                print(f"ipv64 report a {self._task['error']} errorcode")
+                self.printError(f"ipv64 report a {self._task['error']} errorcode")
             else:
                 self._debug = int(self._task['verbose'])
                 self.runtask(self._task['tasks'])
