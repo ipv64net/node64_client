@@ -95,7 +95,6 @@ class Node64Client:
     def icmp(self,task,family):
         packet_loss = "0"
         try:
-            
             result = ping(task["icmp_dst"],
                           count=task["icmp_count"], 
                           interval=task["icmp_interval"], 
