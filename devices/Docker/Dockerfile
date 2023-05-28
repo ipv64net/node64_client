@@ -11,6 +11,6 @@ ENV NodeSecret=''
 ENV Node64Color=False
 ENV Node64Script='node64.py'
 
-ENTRYPOINT ["entry.sh"]
+ENTRYPOINT ["/entry.sh"]
 
 
