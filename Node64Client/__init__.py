@@ -23,7 +23,7 @@ class Node64Client:
     GetTaskURL = BaseURL + 'get_task.php'
     ReportURL = BaseURL + 'report_node_status.php'
     ResultURL = BaseURL + 'task_report_result.php'
-    Timeout = 1.5
+    Timeout = 5
     DefaultWait = 60
     Version = "0.0.6"
     signal_exit = False
@@ -54,6 +54,8 @@ class Node64Client:
 
     def sendData(self,url,data):
         try:
+            #print(url)
+            #print(data)
             return httppost(url, data = data, verify=False, timeout=self.Timeout)
         except:
             return ''
@@ -65,7 +67,7 @@ class Node64Client:
                 return result.json()
             if self._debug:
                 print(f"Error sendData {result}")
-            return '{}'.json()
+            return {"error": 1, "wait": self.DefaultWait , "verbose": 1}
         except:
             pass
 
@@ -211,16 +213,15 @@ class Node64Client:
     def run(self):
         while not self.signal_exit:
             self._task = self.getTask()
-            #print(self._task) # debug
-            
+            print(self._task)
+
             if self._task['error'] > 0: 
                 print(f"ipv64 report a {self._task['error']} errorcode")
             else:
                 self._debug = int(self._task['verbose'])
                 if self._debug:
-                    print(f"recieve Task: {self._task}")
+                    print(f"receive Task: {self._task}")
                 self.runtask(self._task['tasks'])
-
             if self.signal_exit:
                 return
 
