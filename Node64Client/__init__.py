@@ -177,7 +177,7 @@ class Node64Client:
                     response = self.sendResult(task,result)
                     if self._debug and response.status_code != 200: 
                         print(f"\tAnswer: {response.status_code} {response.content.decode()}")
-                    self.stats(self,task,result,response,round(time.time() - start_time,4))
+                    self.stats(task,result,response,round(time.time() - start_time,4))
             except Exception as err:
                 if self._debug:
                     print(f"Unexpected {err=}, {type(err)=}")
