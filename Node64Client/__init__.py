@@ -43,7 +43,7 @@ class Node64Client:
 
     def __init__(self,SecretKey,colorOutput = False):
         self.SecretKey = SecretKey
-        if colorOutput:
+        if not colorOutput:
             self.CINFO = self.CDEBUG = self.COK = self.CWARNING = self.CERROR = self.ENDC = ''  
         self.printInfo(f"SecretKey: {self.SecretKey}")
         self.report_ipv4()
