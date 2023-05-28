@@ -11,7 +11,6 @@ import hashlib
 import time
 import urllib3
 import sys
-from os import geteuid
 import ipwhois
 
 #Hide verification message
