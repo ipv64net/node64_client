@@ -159,6 +159,7 @@ def prepare_logging(logger_name: str):
 
 
 def signal_handler(sig, frame):
+    logger = prepare_logging("signalhandler")
     if sig == signal.SIGINT:
         logger.info('\nYou pressed Ctrl+C!\nExit Programm')
     if sig == signal.SIGTERM:
