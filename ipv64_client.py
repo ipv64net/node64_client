@@ -28,7 +28,7 @@ else:
     node_secret = sys.argv[1]
 
 
-logger = prepare_logging("main")
+logger = functions.prepare_logging("main")
 
 logger.info("IPv64.net - Initialisierung")
 logger.info(f"using node_secret ${node_secret}")
