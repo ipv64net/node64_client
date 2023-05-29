@@ -13,6 +13,7 @@ import urllib3
 import sys
 import ipwhois
 
+
 #Hide verification message
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -26,6 +27,8 @@ class Node64Client:
     ResultURL = BaseURL + 'task_report_result.php'
     Timeout = 5
     DefaultWait = 60
+    sleeptime = 0
+    MaxWait = 3600
     Version = "0.0.6"
     signal_exit = False
     _task = ''
@@ -246,6 +249,12 @@ class Node64Client:
                 if self._debug:
                     self.printError(f"Unexpected {err=}, {type(err)=}")
     
+    def checkSleepTime(self,_task):
+        self.sleeptime = _task['wait'] if 'wait' in _task and _task['wait'] > 0 else self.DefaultWait
+        if self.sleeptime > self.MaxWait:
+            self.printError(f"Limit Schröder Sleep {self.sleeptime} to {self.MaxWait}s")
+            self.sleeptime = self.MaxWait
+
     def run(self):
         while not self.signal_exit:
             self._task = self.getTask()
@@ -260,7 +269,12 @@ class Node64Client:
                 return
 
             self._sleep = True
-            time.sleep(self._task['wait'] if 'wait' in self._task and self._task['wait'] > 0 else self.DefaultWait)
+            
+            self.checkSleepTime(self._task)
+
+            if self._debug:
+                self.printDebug(f"sleep: {self.sleeptime}s")
+            time.sleep(self.sleeptime)
             self._sleep = False
 
     def stats(self,task,result,response,runtime):
