@@ -12,7 +12,8 @@ name: Create and publish a Docker image
 on:
   push:
     branches: ['dev']
-
+  pull_request:
+    branches: [ main, dev ]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -37,10 +38,30 @@ jobs:
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
       - name: Git Tag
-        run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
-      - name: Main
         run: |
-          env | sort
+          versionGit=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
+          versionPY=v$(grep 'Version = ' Node64Client/__init__.py | cut -d'=' -f2 | xargs)
+          if [ "$versionGit" != "$versionPY" ]; then
+            echo "Need Update Tag"
+            echo "versionGit: '$versionGit' versionPY: '$versionPY'"
+            echo "CREATETAG=true" >> $GITHUB_ENV
+            echo "GIT_TAG=${versionPY}" >> $GITHUB_ENV
+          else
+            echo "CREATETAG=false" >> $GITHUB_ENV
+            echo "GIT_TAG=${version}" >> $GITHUB_ENV
+          fi
+        
+      - name: Create tag
+        if: env.CREATETAG == 'true'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.GIT_TAG }}',
+              sha: context.sha
+            })
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
