@@ -5,34 +5,49 @@ import dns
 from dns.resolver import Resolver
 import signal
 import sys
+import logging
+import os
 
-version = "0.0.5"
+
+version = "0.0.6"
+
 
 def report_version(node_secret, timeout = 1.5):
+    logger = prepare_logging("functions")
+
     url = 'https://ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret,'version':version}
     try:
         x = requests.post(url, data = myobj, verify=False, timeout=timeout)
-    except:
-        print("")
+    except Exception as e:
+        logger.error("Skip: Version reporting")
+
 
 def report_ipv4(node_secret, timeout = 1.5):
+    logger = prepare_logging("functions")
+
     url = 'https://ipv4.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
         x = requests.post(url, data = myobj, verify=False, timeout=timeout)
     except:
-        print("Skip: IPv4 could not be resolved")
+        logger.error("Skip: IPv4 could not be resolved")
+
 
 def report_ipv6(node_secret, timeout = 1.5):
+    logger = prepare_logging("functions")
+
     url = 'https://ipv6.ipv64.net/dims/report_node_status.php'
     myobj = {'node_secret' : node_secret}
     try:
         x = requests.post(url, data = myobj, verify=False, timeout=timeout)
     except:
-        print("Skip: IPv6 could not be resolved")
+        logger.error("Skip: IPv6 could not be resolved")
+
 
 def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,family):
+    logger = prepare_logging("functions")
+
     try:
         response_list = ping(icmp_dst, count=icmp_count, interval=icmp_interval, timeout=icmp_timeout, payload_size=icmp_size, family=family)
         rtt_avg = response_list.avg_rtt
@@ -47,7 +62,10 @@ def icmp(icmp_dst,icmp_size,icmp_count,icmp_interval,icmp_timeout,family):
     data = json.dumps(task_result)
     return data
 
+
 def trace(trace_dst,trace_size,trace_count,trace_interval,trace_timeout,max_hops,family):
+    logger = prepare_logging("functions")
+
     try:
         hops = traceroute(trace_dst,count=trace_count,interval=0.1,timeout=1,max_hops=30,family=family,payload_size=trace_size)
         last_distance = 0
@@ -70,7 +88,10 @@ def trace(trace_dst,trace_size,trace_count,trace_interval,trace_timeout,max_hops
     data = json.dumps(tracert)
     return data
 
+
 def dns_resolve(query,query_type):
+    logger = prepare_logging("functions")
+
     result = Resolver()
     #result.nameservers = [nameserver]
     try:
@@ -85,8 +106,11 @@ def dns_resolve(query,query_type):
         data = {"error":"Could not be resolved"}
     data = json.dumps(data)
     return data
-    
+
+
 def nslookup(query):
+    logger = prepare_logging("functions")
+
     try:
         data = []
         result = dns.resolver.resolve_address(query)
@@ -98,10 +122,45 @@ def nslookup(query):
     data = json.dumps(data)
     return data
 
+
+# logging
+def prepare_logging(logger_name: str):
+    # parse log level
+    log_levels = {
+        "NOTSET": logging.NOTSET,
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL
+    }
+
+    level = os.getenv("LOG_LEVEL", "INFO")
+    log_level = log_levels[level] if level in log_levels.keys() else log_levels["INFO"]
+
+    # parse target
+    target = os.getenv("LOG_OUTPUT", "stdout")
+    file_name = f"{os.path.basename(sys.argv[0]).split('.')[0]}.log"
+
+    log_destination = sys.stdout
+    if target != "stdout":
+        if target.endswith(file_name) and os.path.exists(target[:-len(file_name)]):
+            log_destination = target
+        elif not target.endswith(file_name) and os.path.isdir(target):
+            log_destination = os.path.join(f"{target}", file_name)
+
+    print(target, log_destination)
+    logging.basicConfig(
+        format="{asctime} | {levelname} | {name} | {message}", style='{',
+        datefmt="%Y-%m-%d %H:%M:%S %z",
+        stream=log_destination, level=log_level
+    )
+    return logging.getLogger(logger_name)
+
+
 def signal_handler(sig, frame):
     if sig == signal.SIGINT:
-        print('\nYou pressed Ctrl+C!\nExit Programm')
+        logger.info('\nYou pressed Ctrl+C!\nExit Programm')
     if sig == signal.SIGTERM:
-        print('\nExit Programm')
+        logger.info('\nExit Programm')
     sys.exit(0)
-

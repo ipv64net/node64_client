@@ -27,8 +27,12 @@ elif len(sys.argv) == 1:
 else:
     node_secret = sys.argv[1]
 
-print("IPv64.net - Initialisierung")
-print(f"using node_secret ${node_secret}")
+
+logger = prepare_logging("main")
+
+logger.info("IPv64.net - Initialisierung")
+logger.info(f"using node_secret ${node_secret}")
+
 # At Start, report IPv4 and IPv6
 functions.report_ipv4(node_secret)
 functions.report_ipv6(node_secret)
@@ -56,27 +60,27 @@ while True:
             for _tasks in x["tasks"]:
                 task_result = None
                 if _tasks["task_type"] == "icmpv4":
-                    print("Start ICMPv4 Task ID: " + _tasks["task_id"])
+                    logger.info("Start ICMPv4 Task ID: " + _tasks["task_id"])
                     icmp_dst = _tasks["task_infos"]["icmp_dst"]
                     icmp_size = _tasks["task_infos"]["icmp_size"]
                     icmp_count = _tasks["task_infos"]["icmp_count"]
                     icmp_interval = _tasks["task_infos"]["icmp_interval"]
                     icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
                     task_result = functions.icmp(icmp_dst, icmp_size, icmp_count, icmp_interval, icmp_timeout, 4)
-                    print("End ICMPv4 Task ID: " + _tasks["task_id"])
+                    logger.info("End ICMPv4 Task ID: " + _tasks["task_id"])
 
                 elif _tasks["task_type"] == "icmpv6":
-                    print("Start ICMPv6 Task ID: " + _tasks["task_id"])
+                    logger.info("Start ICMPv6 Task ID: " + _tasks["task_id"])
                     icmp_dst = _tasks["task_infos"]["icmp_dst"]
                     icmp_size = _tasks["task_infos"]["icmp_size"]
                     icmp_count = _tasks["task_infos"]["icmp_count"]
                     icmp_interval = _tasks["task_infos"]["icmp_interval"]
                     icmp_timeout = _tasks["task_infos"]["icmp_timeout"]
                     task_result = functions.icmp(icmp_dst, icmp_size, icmp_count, icmp_interval, icmp_timeout, 6)
-                    print("End ICMPv6 Task ID: " + _tasks["task_id"])
+                    logger.info("End ICMPv6 Task ID: " + _tasks["task_id"])
 
                 elif _tasks["task_type"] == "traceroute":
-                    print("Start Traceroute Task ID: " + _tasks["task_id"])
+                    logger.info("Start Traceroute Task ID: " + _tasks["task_id"])
                     trace_dst = _tasks["task_infos"]["trace_dst"]
                     trace_size = _tasks["task_infos"]["trace_size"]
                     trace_count = _tasks["task_infos"]["trace_count"]
@@ -85,20 +89,20 @@ while True:
                     trace_max_hops = _tasks["task_infos"]["trace_max_hops"]
                     trace_family = _tasks["task_infos"]["trace_family"]
                     task_result = functions.trace(trace_dst,trace_count,trace_interval,trace_timeout,trace_max_hops,trace_family,trace_size)
-                    print("End Traceroute Task ID: " + _tasks["task_id"])
+                    logger.info("End Traceroute Task ID: " + _tasks["task_id"])
 
                 elif _tasks["task_type"] == "dns":
-                    print("Start DNS Task ID: " + _tasks["task_id"])
+                    logger.info("Start DNS Task ID: " + _tasks["task_id"])
                     dns_query = _tasks["task_infos"]["dns_query"]
                     dns_type = _tasks["task_infos"]["dns_type"]
                     task_result = functions.dns_resolve(dns_query, dns_type)
-                    print("End DNS Task ID: " + _tasks["task_id"])
+                    logger.info("End DNS Task ID: " + _tasks["task_id"])
 
                 elif _tasks["task_type"] == "nslookup":
-                    print("Start NSLOOKUP Task ID: " + _tasks["task_id"])
+                    logger.info("Start NSLOOKUP Task ID: " + _tasks["task_id"])
                     ns_ip = _tasks["task_infos"]["ns_ip"]
                     task_result = functions.nslookup(ns_ip)
-                    print("End NSLOOKUP Task ID: " + _tasks["task_id"])
+                    logger.info("End NSLOOKUP Task ID: " + _tasks["task_id"])
 
                 if task_result is not None:
                     url = 'https://ipv64.net/dims/task_report_result.php'
@@ -107,20 +111,16 @@ while True:
                     task_hash = hashlib.sha256(task_hash.encode('utf-8')).hexdigest()
                     myobj = {'node_secret': node_secret, 'task_id': _tasks["task_id"], 'task_result': task_result, 'task_hash': task_hash}
                     req = requests.post(url, data=myobj, verify=False, timeout = 1.5)
+
         if x["verbose"] == 1:
-            print(task_result)
-        print(f"Response: {x}")
-        print("Wait for next Job.")
+            logger.debug(task_result)
+        logger.debug(f"Response: {x}")
+        logger.debug("Wait for next Job.")
         time.sleep(x["wait"])
 
     except requests.exceptions.ReadTimeout:
-        print("Network Connection Timeout")
+        logger.warning("Network Connection Timeout")
         time.sleep(60)
     except Exception as err:
-        print(f"An exception occurred: {err}")
+        logger.warning(f"An exception occurred: {err}")
         time.sleep(60)
-
-
-
-
-
