@@ -38,9 +38,11 @@ if __name__ == "__main__":
         from os import geteuid
         if geteuid() != 0:
             exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
-    else:
-        threadserver = threading.Thread(target=runserver)
-        threadserver.start()
-        client = myclient(nodeSecret,nodeColor)
-        client.run()
-        threadserver.do_run = False
+    threadserver = threading.Thread(target=runserver)
+    threadserver.start()
+    client = myclient(nodeSecret,nodeColor)
+    client.run()
+    threadserver.do_run = False
+
+
+
