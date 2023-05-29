@@ -12,8 +12,7 @@ name: GHCR Docker image
 on:
   push:
     branches: [ main, dev ]
-  pull_request:
-    branches: [ main, dev ]
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
