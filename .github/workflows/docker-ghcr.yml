@@ -39,14 +39,15 @@ jobs:
         id: get-latest-tag
       - name: Git Tag
         run: |
-          versionGit=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
+          versionGit=$(git tag | sort -r | head -n1)
           versionPY=v$(grep 'Version = ' Node64Client/__init__.py | cut -d'=' -f2 | xargs)
-          if [ "$versionGit" != "$versionPY" ]; then
-            echo "Need Update Tag"
+          if [ "$versionGit" != "$versionPY" -a $(git tag | grep -c "$versionPY") -eq 0 ]; then
+            echo "Need new Tag"
             echo "versionGit: '$versionGit' versionPY: '$versionPY'"
             echo "CREATETAG=true" >> $GITHUB_ENV
             echo "GIT_TAG=${versionPY}" >> $GITHUB_ENV
           else
+            echo "Need no new Tag"
             echo "CREATETAG=false" >> $GITHUB_ENV
             echo "GIT_TAG=${version}" >> $GITHUB_ENV
           fi
