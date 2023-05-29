@@ -7,11 +7,11 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Create and publish a Docker image
+name: GHCR Docker image
 
 on:
   push:
-    branches: ['dev']
+    branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
 env:
