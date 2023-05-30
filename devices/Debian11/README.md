@@ -25,21 +25,21 @@ sudo apt install wget
 - install the service
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/node64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -i
 ```
 
 - update the service
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/node64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -u
 ```
 
 - print the help message
 
 ```sh
-wget https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/install-service.sh
+wget https://raw.githubusercontent.com/ipv64net/node64_client/main/devices/Debian11/install-service.sh
 sudo bash install-service.sh -h
 ```
 
@@ -59,8 +59,8 @@ apt install python3-pip -y
 ```sh
 mkdir /opt
 cd /opt/
-git clone https://github.com/ipv64net/ipv64_client.git
-cd ipv64_client/
+git clone https://github.com/node64_client/ipv64_client.git
+cd node64_client/
 pip3 install -r requirements.txt
 ```
 

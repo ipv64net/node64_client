@@ -9,7 +9,7 @@ Environment="Node64Color=False"
 Type=simple
 Restart=always
 RestartSec=30
-WorkingDirectory=/opt/ipv64_client/
+WorkingDirectory=/opt/node64_client/
 ExecStart=python3 node64.py
 
 [Install]

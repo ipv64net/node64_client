@@ -12,8 +12,8 @@ Install the dependencies and start the server.
 
 ```sh
 apt install python3 python3-pip git -y
-git clone https://github.com/ipv64net/ipv64_client
-cd ipv64_client
+git clone https://github.com/ipv64net/node64_client
+cd node64_client
 pip3 install -r requirements.txt
 python3 node64.py <Dein Node Secret Key>
 ```

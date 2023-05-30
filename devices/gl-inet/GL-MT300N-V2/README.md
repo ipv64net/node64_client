@@ -24,13 +24,13 @@ opkg --force-removal-of-dependent-packages install ca-bundle
 ```sh
 mkdir /opt
 cd /opt/
-git clone https://github.com/ipv64net/ipv64_client.git
-cd ipv64_client/
+git clone https://github.com/ipv64net/node64_client.git
+cd node64_client/
 pip3 install -r requirements.txt
 ```
-5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client) to the folder /etc/init.d/
+5. Copy the [Service-File](https://github.com/ipv64net/node64_client/blob/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client) to the folder /etc/init.d/
 ```sh
-wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client
+wget -O /etc/init.d/node64_client https://raw.githubusercontent.com/ipv64net/node64_client/main/devices/gl-inet/GL-MT300N-V2/init.d/node64_client
 ```
 6. Edit the Node #Secret in the Servicefile
 7. Allow to execute the Servicefile

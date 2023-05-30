@@ -14,8 +14,8 @@ Instructions for Compose V2 (From the end of June 2023 Compose V1 won’t be sup
 
 1. Clone repo
 ```sh
-git clone https://github.com/ipv64net/ipv64_client.git
-cd ipv64_client/devices/Docker/
+git clone https://github.com/ipv64net/node64_client.git
+cd node64_client/devices/Docker/
 ```
 2. Build
 ```sh
