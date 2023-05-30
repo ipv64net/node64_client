@@ -109,11 +109,11 @@ class Node64Client:
         self.sendData(self.ReportURL,{'node_secret' : self.SecretKey,'version':self.Version})
 
     def report_ipv4(self):
-        url = 'https://ipv4.lb.node64.io/report_node_status.php'
+        url = 'https://ipv4.node64.io/report_node_status.php'
         self.sendData(url,{'node_secret' : self.SecretKey})
 
     def report_ipv6(self):
-        url = 'https://ipv6.lb.node64.io/report_node_status.php'
+        url = 'https://ipv6.node64.io/report_node_status.php'
         self.sendData(url,{'node_secret' : self.SecretKey})
 
     def sendResult(self,task,result):
