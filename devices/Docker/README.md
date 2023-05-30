@@ -32,9 +32,9 @@ docker compose up -d
 ```sh
 docker run -d \
   --name node64_client \
-  -e ipv64NodeSecret=<Node #Secret> \
+  -e Node64Secret=<Node #Secret> \
   --restart=unless-stopped \
-  jonathann1203/node64_client:v1
+  ghcr.io/ipv64net/ipv64_client:latest
 ```
 
 ## Installation with Prebuild Container Compose (Protainer)
@@ -46,7 +46,7 @@ services:
   node64_client:
     restart: unless-stopped
     container_name: node64_client
-    image: jonathann1203/node64_client:v1
+    image: ghcr.io/ipv64net/ipv64_client:latest
     environment:
-      - ipv64NodeSecret=${ipv64NodeSecret}
+      - Node64Secret=${ipv64NodeSecret}
 ```

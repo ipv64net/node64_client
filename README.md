@@ -15,7 +15,7 @@ apt install python3 python3-pip git -y
 git clone https://github.com/ipv64net/ipv64_client
 cd ipv64_client
 pip3 install -r requirements.txt
-python3 ipv64_client.py <Dein Node Secret Key>
+python3 node64.py <Dein Node Secret Key>
 ```
 
 ## Installation on hardware devices
