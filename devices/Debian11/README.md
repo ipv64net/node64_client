@@ -59,12 +59,12 @@ apt install python3-pip -y
 ```sh
 mkdir /opt
 cd /opt/
-git clone https://github.com/node64_client/ipv64_client.git
+git clone https://github.com/ipv64net/node64_client.git
 cd node64_client/
 pip3 install -r requirements.txt
 ```
 
-5. Copy the [Service-File](https://github.com/ipv64net/ipv64_client/blob/main/devices/Debian11/systemd/node64_client.service) to the folder /etc/systemd/system/
+5. Copy the [Service-File](https://github.com/ipv64net/node64_client/blob/main/devices/Debian11/systemd/node64_client.service) to the folder /etc/systemd/system/
 
 ```sh
 wget -O /etc/systemd/system/node64_io.service https://raw.githubusercontent.com/ipv64net/ipv64_client/main/devices/Debian11/systemd/node64_client.service
