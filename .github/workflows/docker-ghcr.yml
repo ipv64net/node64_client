@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: node64_client
 
 jobs:
   container:
@@ -36,6 +36,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_NAME,,}" >>${GITHUB_ENV}
           versionGit=${{ steps.get-latest-tag.outputs.tag }}
           versionPY=v$(grep 'Version = ' Node64Client/__init__.py | cut -d'=' -f2 | xargs)
           if [ "$versionGit" != "$versionPY" -a $(git tag | grep -c "$versionPY") -eq 0 ]; then
