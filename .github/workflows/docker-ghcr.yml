@@ -36,6 +36,7 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "START_IMAGE_NAME="${IMAGE_NAME}" >>${GITHUB_ENV}
           echo "IMAGE_NAME=${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_NAME,,}" >>${GITHUB_ENV}
           versionGit=${{ steps.get-latest-tag.outputs.tag }}
           versionPY=v$(grep 'Version = ' Node64Client/__init__.py | cut -d'=' -f2 | xargs)
@@ -112,3 +113,63 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.sha_short }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.version }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: CleanUp ${{ env.START_IMAGE_NAME }} Package
+        if: ${{ github.ref == format('refs/heads/{0}', 'main') }}
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+          script: |
+            try {
+              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+                { per_page: ${{ env.PER_PAGE }}
+              });
+              for(version of response.data) {
+                  if (version.metadata.container.tags.length == 0) {
+                    try {
+                      console.log("try delete " + version.id)
+                      const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                      console.log("status " + deleteResponse.status)
+                    } catch (error) {
+                      console.log(`cant delete: ` + deleteResponse.status);
+                    }
+
+                  }
+              }
+            } catch (error) {
+              console.log(`Error URL: ` + error);
+            }
+        env:
+          OWNER: user # or orgs/<org name>
+          PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}
+          PER_PAGE: 100
+
+      - name: CleanUp ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }} Package
+        if: ${{ github.ref != format('refs/heads/{0}', 'main') }}
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+          script: |
+            try {
+              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+                { per_page: ${{ env.PER_PAGE }}
+              });
+              for(version of response.data) {
+                  if (version.metadata.container.tags.length == 0) {
+                    try {
+                      console.log("try delete " + version.id)
+                      const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                      console.log("status " + deleteResponse.status)
+                    } catch (error) {
+                      console.log(`cant delete: ` + deleteResponse.status);
+                    }
+
+                  }
+              }
+            } catch (error) {
+              console.log(`Error URL: ` + error);
+            }
+        env:
+          OWNER: user # or orgs/<org name>
+          PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }}
+          PER_PAGE: 100
