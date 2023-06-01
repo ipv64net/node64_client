@@ -30,7 +30,7 @@ python3 node64.py <Your Node Secret Key>
 
 ```sh
 export Node64Secret=<Your Node Secret Key>
-python3 node64.py <Your Node Secret Key>
+python3 node64.py
 ```
 
 #### variant 2
