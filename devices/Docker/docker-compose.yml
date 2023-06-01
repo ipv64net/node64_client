@@ -6,5 +6,6 @@ services:
     build:
       context: ./../../
       dockerfile: ./devices/Docker/Dockerfile
+    network_mode: bridge
     environment:
       - Node64Secret=${Node64Secret}
