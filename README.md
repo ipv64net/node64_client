@@ -36,7 +36,7 @@ python3 node64.py
 #### variant 2
 
 ```sh
-Node64Secret=<Your Node Secret Key> python3 node64.py <Your Node Secret Key>
+Node64Secret=<Your Node Secret Key> python3 node64.py
 ```
 
 ### enable color output
