@@ -54,6 +54,6 @@ To enable verbose, the verbose checkbox on the website must be activated.
 
 [Debian 11](devices/Debian11/README.md)
 
-[Docker](devices/Docker/DOCKER.md)
+[Docker](devices/Docker/README.md)
 
 [Mango (GL-MT300N-V2)](devices/gl-inet/GL-MT300N-V2/README.md)
