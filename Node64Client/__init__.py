@@ -112,7 +112,7 @@ class Node64Client:
         url = 'https://ipv4.node64.io/report_node_status.php'
         result = self.sendData(url,{'node_secret' : self.SecretKey,'version':self.Version})
         if self._debug:
-            if result.content:
+            if hasattr(result,'content') and result.content:
                 self.printInfo(f"Reported IPv4: {self.COK}{result.json()['ip']}")
             else:
                 self.printError(f"Reported IPv4: NULL")
@@ -121,7 +121,7 @@ class Node64Client:
         url = 'https://ipv6.node64.io/report_node_status.php'
         result = self.sendData(url,{'node_secret' : self.SecretKey,'version':self.Version})
         if self._debug:
-            if result.content:
+            if hasattr(result,'content') and result.content:
                 self.printInfo(f"Reported IPv6: {self.COK}{result.json()['ip']}")
             else:
                 self.printError(f"Reported IPv6: NULL")
