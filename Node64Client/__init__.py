@@ -87,6 +87,13 @@ class Node64Client:
     def printError(self,msg):
         print(f'{self.CERROR}{msg}{self.ENDC}')
         
+    def ErrorCode(self,error):
+        if error == 1: return 'wait not observed / Secretkey wrong'
+        if error == 2: return 'No IP Reported. Auto Detect enbale?'
+        if error == 42: return 'getTask response content empty'
+        if error == 43: return 'getTask http error code'
+        if error == 408: return 'sendData http error code'
+        
     def sendData(self,url,data):
         http = 0
         try:
@@ -224,7 +231,6 @@ class Node64Client:
             return json.dumps(task_result)
         except Exception as err:
             if self._debug: 
-                print(results)
                 self.printError(f"\tUnexpected {err=}, {type(err)=}")
             return json.dumps({"error_msg":"timeout"})
 
@@ -273,10 +279,9 @@ class Node64Client:
     def run(self):
         while not self.signal_exit:
             self._task = self.getTask()
-            #print(self._task)
 
             if self._task['error'] > 0: 
-                self.printError(f"ipv64 report a {self._task['error']} errorcode")
+                self.printError(f"ipv64 report a {self._task['error']} errorcode: {self.ErrorCode(self._task['error'])}")
             else:
                 self._debug = int(self._task['verbose'])
                 self.runtask(self._task['tasks'])
