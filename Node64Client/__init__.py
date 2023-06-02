@@ -12,6 +12,7 @@ import time
 import urllib3
 import sys
 import ipwhois
+import os.path
 
 MIN_PYTHON = (3, 8)
 if sys.version_info < MIN_PYTHON:
@@ -132,7 +133,9 @@ class Node64Client:
                 self.printInfo(f"Reported IPv6: {self.COK}{result.json()['ip']}")
             else:
                 self.printError(f"Reported IPv6: NULL")
-
+        elif not hasattr(result,'content') and os.path.isfile('/.dockerenv'):
+            self.printError(f"You have enable IPv6 Support for Docker?")
+            self.printInfo(f"https://github.com/ipv64net/node64_client/blob/dev/devices/Docker/README.md#ipv6")
 
     def sendResult(self,task,result):
         if result is not None:
