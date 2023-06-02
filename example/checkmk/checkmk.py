@@ -80,7 +80,8 @@ if __name__ == "__main__":
     threadserver = threading.Thread(target=runserver)
     threadserver.start()
     client = statsCollector.statsCollector(nodeSecret,nodeColor)
-    client.MaxWait = 16
+    if getenv('Node64MaxWait'):
+        client.MaxWait = getenv('Node64MaxWait')
     client.run()
     threadserver.do_run = False
     #runserver()
