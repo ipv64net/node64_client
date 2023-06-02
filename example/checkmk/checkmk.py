@@ -81,7 +81,7 @@ if __name__ == "__main__":
     threadserver.start()
     client = statsCollector.statsCollector(nodeSecret,nodeColor)
     if getenv('Node64MaxWait'):
-        client.MaxWait = getenv('Node64MaxWait')
+        client.MaxWait = int(getenv('Node64MaxWait'))
     client.run()
     threadserver.do_run = False
     #runserver()
