@@ -133,6 +133,9 @@ class Node64Client:
                 self.printInfo(f"Reported IPv6: {self.COK}{result.json()['ip']}")
             else:
                 self.printError(f"Reported IPv6: NULL")
+                if os.path.isfile('/.dockerenv'):
+                    self.printError(f"You have enable IPv6 Support for Docker?")
+                    self.printInfo(f"https://github.com/ipv64net/node64_client/blob/dev/devices/Docker/README.md#ipv6")
         elif not hasattr(result,'content') and os.path.isfile('/.dockerenv'):
             self.printError(f"You have enable IPv6 Support for Docker?")
             self.printInfo(f"https://github.com/ipv64net/node64_client/blob/dev/devices/Docker/README.md#ipv6")
