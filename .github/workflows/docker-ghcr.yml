@@ -114,62 +114,62 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.version }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: CleanUp ${{ env.START_IMAGE_NAME }} Package
-        if: ${{ github.ref == format('refs/heads/{0}', 'main') }}
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
-          script: |
-            try {
-              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
-                { per_page: ${{ env.PER_PAGE }}
-              });
-              for(version of response.data) {
-                  if (version.metadata.container.tags.length == 0) {
-                    try {
-                      console.log("try delete " + version.id)
-                      const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
-                      console.log("status " + deleteResponse.status)
-                    } catch (error) {
-                      console.log(`cant delete: ` + deleteResponse.status);
-                    }
+      # - name: CleanUp ${{ env.START_IMAGE_NAME }} Package
+      #   if: ${{ github.ref == format('refs/heads/{0}', 'main') }}
+      #   uses: actions/github-script@v3
+      #   with:
+      #     github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+      #     script: |
+      #       try {
+      #         const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+      #           { per_page: ${{ env.PER_PAGE }}
+      #         });
+      #         for(version of response.data) {
+      #             if (version.metadata.container.tags.length == 0) {
+      #               try {
+      #                 console.log("try delete " + version.id)
+      #                 const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+      #                 console.log("status " + deleteResponse.status)
+      #               } catch (error) {
+      #                 console.log(`cant delete: ` + deleteResponse.status);
+      #               }
 
-                  }
-              }
-            } catch (error) {
-              console.log(`Error URL: ` + error);
-            }
-        env:
-          OWNER: user # or orgs/<org name>
-          PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}
-          PER_PAGE: 100
+      #             }
+      #         }
+      #       } catch (error) {
+      #         console.log(`Error URL: ` + error);
+      #       }
+      #   env:
+      #     OWNER: user # or orgs/<org name>
+      #     PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}
+      #     PER_PAGE: 100
 
-      - name: CleanUp ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }} Package
-        if: ${{ github.ref != format('refs/heads/{0}', 'main') }}
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
-          script: |
-            try {
-              const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
-                { per_page: ${{ env.PER_PAGE }}
-              });
-              for(version of response.data) {
-                  if (version.metadata.container.tags.length == 0) {
-                    try {
-                      console.log("try delete " + version.id)
-                      const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
-                      console.log("status " + deleteResponse.status)
-                    } catch (error) {
-                      console.log(`cant delete: ` + deleteResponse.status);
-                    }
+      # - name: CleanUp ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }} Package
+      #   if: ${{ github.ref != format('refs/heads/{0}', 'main') }}
+      #   uses: actions/github-script@v3
+      #   with:
+      #     github-token: ${{ secrets.DELETE_PACKAGES_TOKEN }}
+      #     script: |
+      #       try {
+      #         const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+      #           { per_page: ${{ env.PER_PAGE }}
+      #         });
+      #         for(version of response.data) {
+      #             if (version.metadata.container.tags.length == 0) {
+      #               try {
+      #                 console.log("try delete " + version.id)
+      #                 const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+      #                 console.log("status " + deleteResponse.status)
+      #               } catch (error) {
+      #                 console.log(`cant delete: ` + deleteResponse.status);
+      #               }
 
-                  }
-              }
-            } catch (error) {
-              console.log(`Error URL: ` + error);
-            }
-        env:
-          OWNER: user # or orgs/<org name>
-          PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }}
-          PER_PAGE: 100
+      #             }
+      #         }
+      #       } catch (error) {
+      #         console.log(`Error URL: ` + error);
+      #       }
+      #   env:
+      #     OWNER: user # or orgs/<org name>
+      #     PACKAGE_NAME: ${{ env.START_IMAGE_NAME }}_${{ steps.vars.outputs.branch }}
+      #     PER_PAGE: 100
