@@ -12,6 +12,7 @@ import time
 import urllib3
 import sys
 import ipwhois
+import os.path
 
 MIN_PYTHON = (3, 8)
 if sys.version_info < MIN_PYTHON:
@@ -35,7 +36,7 @@ class Node64Client:
     Version = "0.0.6"
     signal_exit = False
     _task = ''
-    _debug = 0
+    _debug = 1
     _sleep = False
 
     #Shell Colors
@@ -51,10 +52,10 @@ class Node64Client:
         self.SecretKey = SecretKey
         if not colorOutput:
             self.CINFO = self.CDEBUG = self.COK = self.CWARNING = self.CERROR = self.ENDC = ''  
-        self.printInfo(f"SecretKey: {self.SecretKey}")
+        self.printInfo(f"SecretKey: {self.COK}{self.SecretKey}")
         self.report_ipv4()
         self.report_ipv6()
-        self.report_version()
+        print("")
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
         time.sleep(3) # Start Delay
@@ -87,6 +88,13 @@ class Node64Client:
     def printError(self,msg):
         print(f'{self.CERROR}{msg}{self.ENDC}')
         
+    def ErrorCode(self,error):
+        if error == 1: return 'wait not observed / Secretkey wrong'
+        if error == 2: return 'No IP Reported. Auto Detect enable?'
+        if error == 42: return 'getTask response content empty'
+        if error == 43: return 'getTask http error code'
+        if error == 408: return 'sendData http error code'
+        
     def sendData(self,url,data):
         http = 0
         try:
@@ -108,16 +116,29 @@ class Node64Client:
         except:
             return {"error": 43, "wait": self.DefaultWait , "verbose": 1}
 
-    def report_version(self):
-        self.sendData(self.ReportURL,{'node_secret' : self.SecretKey,'version':self.Version})
-
     def report_ipv4(self):
         url = 'https://ipv4.node64.io/report_node_status.php'
-        self.sendData(url,{'node_secret' : self.SecretKey})
+        result = self.sendData(url,{'node_secret' : self.SecretKey,'version':self.Version})
+        if self._debug:
+            if hasattr(result,'content') and result.content:
+                self.printInfo(f"Reported IPv4: {self.COK}{result.json()['ip']}")
+            else:
+                self.printError(f"Reported IPv4: NULL")
 
     def report_ipv6(self):
         url = 'https://ipv6.node64.io/report_node_status.php'
-        self.sendData(url,{'node_secret' : self.SecretKey})
+        result = self.sendData(url,{'node_secret' : self.SecretKey,'version':self.Version})
+        if self._debug:
+            if hasattr(result,'content') and result.content:
+                self.printInfo(f"Reported IPv6: {self.COK}{result.json()['ip']}")
+            else:
+                self.printError(f"Reported IPv6: NULL")
+                if os.path.isfile('/.dockerenv'):
+                    self.printError(f"You have enable IPv6 Support for Docker?")
+                    self.printInfo(f"https://github.com/ipv64net/node64_client/blob/dev/devices/Docker/README.md#ipv6")
+        elif not hasattr(result,'content') and os.path.isfile('/.dockerenv'):
+            self.printError(f"You have enable IPv6 Support for Docker?")
+            self.printInfo(f"https://github.com/ipv64net/node64_client/blob/dev/devices/Docker/README.md#ipv6")
 
     def sendResult(self,task,result):
         if result is not None:
@@ -201,6 +222,9 @@ class Node64Client:
         try:
             obj = ipwhois.IPWhois(task["whois_dst"],5)
             results = obj.lookup_rdap()
+            address=results['objects'][results['entities'][0]]['contact']['address']
+            if address:
+                address=address[0]['value']
             task_result = {
                     'query': results['query'],
                     'asn_description': results['asn_description'],
@@ -208,7 +232,7 @@ class Node64Client:
                     'asn': results['asn'],
                     'handle': results['network']['handle'],
                     'name': results['network']['name'],
-                    'address': results['objects'][results['entities'][0]]['contact']['address'][0]['value']
+                    'address': address
             }
             return json.dumps(task_result)
         except Exception as err:
@@ -261,10 +285,9 @@ class Node64Client:
     def run(self):
         while not self.signal_exit:
             self._task = self.getTask()
-            #print(self._task)
 
             if self._task['error'] > 0: 
-                self.printError(f"ipv64 report a {self._task['error']} errorcode")
+                self.printError(f"ipv64 report a {self._task['error']} errorcode: {self.ErrorCode(self._task['error'])}")
             else:
                 self._debug = int(self._task['verbose'])
                 self.runtask(self._task['tasks'])
