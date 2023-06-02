@@ -1,5 +1,7 @@
 import statsCollector
-from os import getenv, name as osname, path
+from os import getenv, name as osname, path, makedirs
+__REALPATH__ = path.dirname(path.dirname(path.dirname(path.realpath(__file__))))
+                            
 import sys
 import time
 import threading
@@ -36,7 +38,7 @@ class checkmk_checker(object):
         _lines.append("Version: xy")
         _lines.append("Hostname: node64")
 
-        con = sqlite3.connect(f"{path.dirname(path.realpath(__file__))}/stats.db")
+        con = sqlite3.connect(f"{__REALPATH__}/stats/stats.db")
         fields = con.execute("SELECT field from tasks GROUP by field ORDER BY field ASC")
         overallruntime = 0.0
         overallcount = 0
@@ -77,6 +79,11 @@ if __name__ == "__main__":
         from os import geteuid
         if geteuid() != 0:
             exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
+    
+    isExist = path.exists(f"{__REALPATH__}/stats")
+    if not isExist:
+        makedirs(f"{__REALPATH__}/stats")
+
     threadserver = threading.Thread(target=runserver)
     threadserver.start()
     client = statsCollector.statsCollector(nodeSecret,nodeColor)

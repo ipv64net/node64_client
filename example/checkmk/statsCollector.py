@@ -2,7 +2,8 @@
 import sys
 from os import getenv, name as osname, path
 
-sys.path.append(path.dirname(path.dirname(path.dirname(path.realpath(__file__)))))
+__REALPATH__ = path.dirname(path.dirname(path.dirname(path.realpath(__file__))))
+sys.path.append(__REALPATH__)
 
 from Node64Client import Node64Client
 
@@ -16,13 +17,13 @@ class statsCollector(Node64Client):
         self.sqlinit()
 
     def sqlinit(self):
-        self.con = sqlite3.connect(f"{path.dirname(path.realpath(__file__))}/stats.db",10)
+        self.con = sqlite3.connect(f"{__REALPATH__}/stats/stats.db",10)
         self.con.execute('CREATE TABLE IF NOT EXISTS tasks (id CHAR PRIMARY KEY, field CHAR, successful INT, runtime REAL, dt datetime default current_timestamp);')
         self.con.commit()
         self.con.close()
 
     def sqlwrite(self,task,result,runtime):
-        self.con = sqlite3.connect(f"{path.dirname(path.realpath(__file__))}/stats.db",10)
+        self.con = sqlite3.connect(f"{__REALPATH__}/stats/stats.db",10)
         taskresult = 1
         result = json.loads(result)
 
