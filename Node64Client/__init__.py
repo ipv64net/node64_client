@@ -89,7 +89,7 @@ class Node64Client:
         
     def ErrorCode(self,error):
         if error == 1: return 'wait not observed / Secretkey wrong'
-        if error == 2: return 'No IP Reported. Auto Detect enbale?'
+        if error == 2: return 'No IP Reported. Auto Detect enable?'
         if error == 42: return 'getTask response content empty'
         if error == 43: return 'getTask http error code'
         if error == 408: return 'sendData http error code'
