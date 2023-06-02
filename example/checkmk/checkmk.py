@@ -77,7 +77,6 @@ if __name__ == "__main__":
         from os import geteuid
         if geteuid() != 0:
             exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
-    print(f"check {__file__}")
     threadserver = threading.Thread(target=runserver)
     threadserver.start()
     client = statsCollector.statsCollector(nodeSecret,nodeColor)
