@@ -51,11 +51,11 @@ class checkmk_checker(object):
             count = data[0]
             runtime = data[1] 
             overallcount += count
-            overallruntime += runtime
+            if type(runtime) == float : overallruntime += runtime
             _lines.append(f'0 "Task {field[0]}" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
         _lines.append(f'0 "node64 Tasks" count={overallcount}|runtime={round(overallruntime,0)} {overallcount} Tasks with a {round(overallruntime,0)}s runtime')
 
-        fields = con.execute("SELECT field from tasks GROUP by field ORDER BY field ASC")
+        fields = con.execute("SELECT field from tasks WHERE date(dt) = date('now') GROUP by field ORDER BY field ASC")
         todayruntime = 0.0
         todaycount = 0
         for field in fields:
@@ -66,7 +66,7 @@ class checkmk_checker(object):
             count = data[0]
             runtime = data[1] 
             todaycount += count
-            todayruntime += runtime
+            todayruntime += float(runtime)
             _lines.append(f'0 "Task {field[0]} Today" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
         _lines.append(f'0 "node64 Tasks Today" count={todaycount}|runtime={round(todayruntime,0)} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
 
