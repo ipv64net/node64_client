@@ -67,8 +67,8 @@ class checkmk_checker(object):
             runtime = data[1] 
             todaycount += count
             todayruntime += float(runtime)
-            _lines.append(f'0 "Task {field[0]} Today" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
-        _lines.append(f'0 "node64 Tasks Today" count={todaycount}|runtime={round(todayruntime,0)} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
+            _lines.append(f'0 "Today Task {field[0]}" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
+        _lines.append(f'0 "Today node64 Tasks " count={todaycount}|runtime={round(todayruntime,0)} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
 
 
         con.close()
