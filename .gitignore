@@ -168,3 +168,4 @@ atlassian-ide-plugin.xml
 Node64Script
 *.db
 .vscode/
+statsimporter/

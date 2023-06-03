@@ -42,33 +42,39 @@ class checkmk_checker(object):
         fields = con.execute("SELECT field from tasks GROUP by field ORDER BY field ASC")
         overallruntime = 0.0
         overallcount = 0
+        overallsuccessful = 0
         _lines.append("<<<local:sep(0)>>>")
         for field in fields:
-            sql = f"SELECT count(*) as count, SUM(runtime) as runtime from tasks WHERE field = '{field[0]}'"
+            sql = f"SELECT count(*) as count, SUM(runtime) as runtime, SUM(successful) as successful from tasks WHERE field = '{field[0]}'"
             #print(sql)
             results = con.execute(sql)
             data = results.fetchone()
             count = data[0]
             runtime = data[1] 
+            successful = data[2] 
             overallcount += count
-            if type(runtime) == float : overallruntime += runtime
-            _lines.append(f'0 "Task {field[0]}" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
-        _lines.append(f'0 "node64 Tasks" count={overallcount}|runtime={round(overallruntime,0)} {overallcount} Tasks with a {round(overallruntime,0)}s runtime')
+            overallruntime += float(runtime)
+            overallsuccessful += int(successful)
+            _lines.append(f'0 "Task {field[0]}" count={count}|runtime={round(runtime,0)}|successful={successful}|failed={count - successful} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
+        _lines.append(f'0 "node64 Tasks" count={overallcount}|runtime={round(overallruntime,0)}|successful={overallsuccessful}|failed={overallcount - overallsuccessful} {overallcount} Tasks with a {round(overallruntime,0)}s runtime')
 
         fields = con.execute("SELECT field from tasks WHERE date(dt) = date('now') GROUP by field ORDER BY field ASC")
         todayruntime = 0.0
         todaycount = 0
+        todaysuccessful = 0
         for field in fields:
-            sql = f"SELECT count(*) as count, SUM(runtime) as runtime from tasks WHERE field = '{field[0]}' and date(dt) = date('now')"
+            sql = f"SELECT count(*) as count, SUM(runtime) as runtime, SUM(successful) as successful from tasks WHERE field = '{field[0]}' and date(dt) = date('now')"
             #print(sql)
             results = con.execute(sql)
             data = results.fetchone()
             count = data[0]
             runtime = data[1] 
+            successful = data[2] 
             todaycount += count
             todayruntime += float(runtime)
-            _lines.append(f'0 "Today Task {field[0]}" count={count}|runtime={round(runtime,0)} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
-        _lines.append(f'0 "Today node64 Tasks " count={todaycount}|runtime={round(todayruntime,0)} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
+            todaysuccessful += int(successful)
+            _lines.append(f'0 "Today Task {field[0]}" count={count}|runtime={round(runtime,0)}|successful={successful}|failed={count - successful} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
+        _lines.append(f'0 "Today node64 Tasks " count={todaycount}|runtime={round(todayruntime,0)}|successful={todaysuccessful}|failed={todaycount - todaysuccessful} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
 
 
         con.close()
