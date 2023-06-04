@@ -22,6 +22,7 @@ else:
 
 
 StopServer = False
+ScriptVersion = ''
 
 def runserver():
     t = threading.current_thread()
@@ -31,11 +32,12 @@ def runserver():
     print("Server Stop")
 
 class checkmk_checker(object):
-
+    
     def do_checks(self,**kwargs):
+        global ScriptVersion
         _lines = ["<<<check_mk>>>"]
         _lines.append("AgentOS: node64")
-        _lines.append(f"Version: {client.Version}")
+        _lines.append(f"Version: {ScriptVersion}")
         _lines.append("Hostname: node64")
 
         con = sqlite3.connect(f"{__REALAPPPATH__}/stats/stats.db")
@@ -115,6 +117,7 @@ if __name__ == "__main__":
     client = statsCollector.statsCollector(nodeSecret,nodeColor)
     if getenv('Node64MaxWait'):
         client.MaxWait = int(getenv('Node64MaxWait'))
+    ScriptVersion = client.Version
     client.run()
     threadserver.do_run = False
     #runserver()
