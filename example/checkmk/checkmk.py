@@ -32,7 +32,7 @@ def runserver():
     print("Server Stop")
 
 class checkmk_checker(object):
-    
+
     def do_checks(self,**kwargs):
         global ScriptVersion
         _lines = ["<<<check_mk>>>"]
@@ -42,45 +42,69 @@ class checkmk_checker(object):
 
         con = sqlite3.connect(f"{__REALAPPPATH__}/stats/stats.db")
         fields = con.execute("SELECT field from tasks GROUP by field ORDER BY field ASC")
-        fieldnames = [field for field in fields]
-        overallruntime = 0.0
-        overallcount = 0
-        overallsuccessful = 0
+        fieldnames = [field[0] for field in fields]
+
+        Stats = {}
+        Stats['global'] = { 'total': {'count':0, 'runtime':0, 'successful':0, 'failed':0},
+                            'today': {'count':0, 'runtime':0, 'successful':0, 'failed':0},
+                            '24h': {'count':0, 'runtime':0, 'successful':0, 'failed':0}}
+        Stats['fields'] = {}
+
+        for field in fieldnames:
+            Stats['fields'].update({ field: {'total': {'count':0, 'runtime':0, 'successful':0, 'failed':0},
+                            'today': {'count':0, 'runtime':0, 'successful':0, 'failed':0},
+                            '24h': {'count':0, 'runtime':0, 'successful':0, 'failed':0}}})
+            sql = f"SELECT count(*) as count, IFNULL(SUM(runtime),0) as runtime, IFNULL(SUM(successful),0) as successful from tasks WHERE field = '{field}';"
+            results = con.execute(sql)
+            data = results.fetchone()
+            Stats['global']['total']['count'] += int(data[0])
+            Stats['global']['total']['runtime'] += round(float(data[1]),2)
+            Stats['global']['total']['successful'] += int(data[2])
+            Stats['global']['total']['failed'] = Stats['global']['total']['count']-Stats['global']['total']['successful']
+
+            Stats['fields'][field]['total']['count'] += int(data[0])
+            Stats['fields'][field]['total']['runtime'] += round(float(data[1]),2)
+            Stats['fields'][field]['total']['successful'] += int(data[2])
+            Stats['fields'][field]['total']['failed'] = Stats['fields'][field]['total']['count']-Stats['fields'][field]['total']['successful']
+
+            sql = f"SELECT count(*) as count, IFNULL(SUM(runtime),0) as runtime, IFNULL(SUM(successful),0) as successful from tasks WHERE field = '{field}' and dt >= datetime('now','-24 hours');"
+            results = con.execute(sql)
+            data = results.fetchone()
+            Stats['global']['today']['count'] = int(data[0])
+            Stats['global']['today']['runtime'] = round(float(data[1]),2)
+            Stats['global']['today']['successful'] = int(data[2])
+            Stats['global']['today']['failed'] = Stats['global']['today']['count']-Stats['global']['today']['successful']
+
+            Stats['fields'][field]['today']['count'] = int(data[0])
+            Stats['fields'][field]['today']['runtime'] = round(float(data[1]),2)
+            Stats['fields'][field]['today']['successful'] = int(data[2])
+            Stats['fields'][field]['today']['failed'] = Stats['fields'][field]['today']['count']-Stats['fields'][field]['today']['successful']
+
+            sql = f"SELECT count(*) as count, IFNULL(SUM(runtime),0) as runtime, IFNULL(SUM(successful),0) from tasks WHERE field = '{field}' and date(dt) = date('now');"
+            results = con.execute(sql)
+            data = results.fetchone()
+            Stats['global']['24h']['count'] = int(data[0])
+            Stats['global']['24h']['runtime'] = round(float(data[1]),2)
+            Stats['global']['24h']['successful'] = int(data[2])
+            Stats['global']['24h']['failed'] = Stats['global']['24h']['count']-Stats['global']['24h']['successful']
+
+            Stats['fields'][field]['24h']['count'] = int(data[0])
+            Stats['fields'][field]['24h']['runtime'] = round(float(data[1]),2)
+            Stats['fields'][field]['24h']['successful'] = int(data[2])
+            Stats['fields'][field]['24h']['failed'] = Stats['fields'][field]['24h']['count']-Stats['fields'][field]['24h']['successful']
+
         _lines.append("<<<local:sep(0)>>>")
-        for field in fieldnames:
-            sql = f"SELECT count(*) as count, SUM(runtime) as runtime, SUM(successful) as successful from tasks WHERE field = '{field[0]}'"
-            #print(sql)
-            results = con.execute(sql)
-            data = results.fetchone()
-            count = data[0]
-            runtime = data[1]
-            successful = data[2]
-            overallcount += count
-            overallruntime += float(runtime)
-            overallsuccessful += int(successful)
-            _lines.append(f'0 "node64 {field[0]}" count={count}|runtime={round(runtime,0)}|successful={successful}|failed={count - successful} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
-        _lines.append(f'0 "node64 Tasks" count={overallcount}|runtime={round(overallruntime,0)}|successful={overallsuccessful}|failed={overallcount - overallsuccessful} {overallcount} Tasks with a {round(overallruntime,0)}s runtime')
-
-        todayruntime = 0.0
-        todaycount = 0
-        todaysuccessful = 0
-        for field in fieldnames:
-            sql = f"SELECT count(*) as count, SUM(runtime) as runtime, SUM(successful) as successful from tasks WHERE field = '{field[0]}' and date(dt) >= datetime('now','-24 hours')"
-            #print(sql)
-            results = con.execute(sql)
-            data = results.fetchone()
-            count = data[0]
-            if count:
-                runtime = data[1]
-                successful = data[2]
-                todaycount += count
-                todayruntime += float(runtime)
-                todaysuccessful += int(successful)
-            else:
-                count = runtime = successful = 0
-            _lines.append(f'0 "node64 24h {field[0]}" count={count}|runtime={round(runtime,0)}|successful={successful}|failed={count - successful} {count} {field[0]} Tasks with a {round(runtime,0)}s runtime')
-        _lines.append(f'0 "node64 24h Tasks " count={todaycount}|runtime={round(todayruntime,0)}|successful={todaysuccessful}|failed={todaycount - todaysuccessful} {todaycount} Tasks with a {round(todayruntime,0)}s runtime')
-
+        count=f'total_count={Stats["global"]["total"]["count"]}|today_count={Stats["global"]["today"]["count"]}|24h_count={Stats["global"]["24h"]["count"]}'
+        runtime=f'total_runtime={Stats["global"]["total"]["runtime"]}|today_runtime={Stats["global"]["today"]["runtime"]}|24h_runtime={Stats["global"]["24h"]["runtime"]}'
+        successful=f'total_successful={Stats["global"]["total"]["successful"]}|today_successful={Stats["global"]["today"]["successful"]}|24h_successful={Stats["global"]["24h"]["successful"]}'
+        failed=f'total_failed={Stats["global"]["total"]["failed"]}|today_failed={Stats["global"]["today"]["failed"]}|24h_failed={Stats["global"]["24h"]["failed"]}'
+        _lines.append(f'0 "Tasks" {count}|{runtime}|{successful}|{failed} Summary')
+        for field in Stats['fields'].keys():
+            count=f'total_count={Stats["fields"][field]["total"]["count"]}|today_count={Stats["fields"][field]["today"]["count"]}|24h_count={Stats["fields"][field]["24h"]["count"]}'
+            runtime=f'total_runtime={Stats["fields"][field]["total"]["runtime"]}|today_runtime={Stats["fields"][field]["today"]["runtime"]}|24h_runtime={Stats["fields"][field]["24h"]["runtime"]}'
+            successful=f'total_successful={Stats["fields"][field]["total"]["successful"]}|today_successful={Stats["fields"][field]["today"]["successful"]}|24h_successful={Stats["fields"][field]["24h"]["successful"]}'
+            failed=f'total_failed={Stats["fields"][field]["total"]["failed"]}|today_failed={Stats["fields"][field]["today"]["failed"]}|24h_failed={Stats["fields"][field]["24h"]["failed"]}'
+            _lines.append(f'0 "Task {field}" {count}|{runtime}|{successful}|{failed} Summary')
 
         con.close()
         return "\n".join(_lines).encode("utf-8")
@@ -98,7 +122,7 @@ class checkmkHandler(StreamRequestHandler):
             pass
 
 def runserver():
-
+    TCPServer.allow_reuse_address = True
     aServer = TCPServer(('', 6556), checkmkHandler)
     aServer.serve_forever()
 
@@ -120,6 +144,4 @@ if __name__ == "__main__":
     ScriptVersion = client.Version
     client.run()
     threadserver.do_run = False
-    #runserver()
-
 
