@@ -80,7 +80,7 @@ class checkmk_checker(object):
             Stats['fields'][field]['today']['successful'] = int(data[2])
             Stats['fields'][field]['today']['failed'] = Stats['fields'][field]['today']['count']-Stats['fields'][field]['today']['successful']
 
-            sql = f"SELECT count(*) as count, IFNULL(SUM(runtime),0) as runtime, IFNULL(SUM(successful),0) from tasks WHERE field = '{field}' and date(dt) = date('now');"
+            sql = f"SELECT count(*) as count, IFNULL(SUM(runtime),0) as runtime, IFNULL(SUM(successful),0) from tasks WHERE field = '{field}' and date(dt, 'localtime') = date('now', 'localtime');"
             results = con.execute(sql)
             data = results.fetchone()
             Stats['global']['24h']['count'] = int(data[0])
