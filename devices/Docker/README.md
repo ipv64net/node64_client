@@ -49,6 +49,7 @@ If you want use the dev branch you can use the `ghcr.io/ipv64net/inode64_client_
 docker run -d \
   --name node64client \
   -e Node64Secret=<Node #Secret> \
+  -e TZ=Europe/Berlin \
   --restart=unless-stopped \
   --network="bridge" \
   ghcr.io/ipv64net/node64_client:latest
@@ -67,6 +68,7 @@ services:
     environment:
       - Node64Secret=${ipv64NodeSecret}
       - Node64Color=true #optional
+      - TZ=Europe/Berlin
 ```
 
 ### build yourself

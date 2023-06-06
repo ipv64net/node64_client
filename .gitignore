@@ -163,34 +163,9 @@ out/
 # JIRA plugin
 atlassian-ide-plugin.xml
 
-# Cursive Clojure plugin
-.idea/replstate.xml
 
-# SonarLint plugin
-.idea/sonarlint/
 
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-# Editor-based Rest Client
-.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-.idea/caches/build_file_checksums.ser
-
-# idea folder, uncomment if you don't need it
-.idea/
-
-#vscode
+Node64Script
+*.db
 .vscode/
-
-# Local History for Visual Studio Code
-.history/
-
-
-# ignore env for Docker (private secret)
-ipv64_client/devices/Docker/.env
-TestScript.py
+statsimporter/

@@ -8,4 +8,5 @@ services:
       dockerfile: ./devices/Docker/Dockerfile
     network_mode: bridge
     environment:
+      - TZ=Europe/Berlin
       - Node64Secret=${Node64Secret}
